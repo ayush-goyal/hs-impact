@@ -123,7 +123,7 @@ module.exports = function(passport) {
 	passport.use(new FacebookStrategy({
 		clientID: process.env.HSIMPACT_FACEBOOK_APP_ID,
 		clientSecret: process.env.HSIMPACT_FACEBOOK_APP_SECRET,
-		callbackURL: "https://hs-impact.herokuapp.com/facebook/return",
+		callbackURL: "https://hs-impact.herokuapp.com/auth/facebook/return",
 		profileFields: ['id', 'displayName', 'email'],
 		passReqToCallback: true
 	}, function(req, accessToken, refreshToken, profile, done) {
