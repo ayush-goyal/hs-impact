@@ -6,8 +6,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <!--[if lte IE 8]><script src="js/ie/html5shiv.js"></script><![endif]-->
-  <link rel="stylesheet" href="css/main.css" />
-  <link rel="stylesheet" href="css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://hs-impact.herokuapp.com/css/main.css" />
+  <link rel="stylesheet" href="https://hs-impact.herokuapp.com/css/top.css" />
+  <link rel="stylesheet" href="https://hs-impact.herokuapp.com/css/font-awesome.min.css" />
   <script src="https://use.typekit.net/cdk6rxa.js"></script>
   <script>
     try { Typekit.load({ async: true }); } catch (e) { }
@@ -17,51 +18,83 @@
 {{#if isHomePage}}
 
 <body class="landing">
-  {{else}}
 
-  <body>
-    {{/if}}
+  <div id="page-wrapper">
+    <!-- Header -->
+    <header id="header" class="alt">
+      {{else}}
 
-    <div id="page-wrapper">
-      <!-- Header -->
-      <header id="header">
-        <nav id="nav">
-          <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/about">About</a></li>
-            <li><a href="/contact">Contact Us</a></li>
-            <li><a href="/signup" class="button">Sign Up</a></li>
-            <li><a href="/login" class="button">Log In</a></li>
-          </ul>
-        </nav>
-      </header>
+      <body>
+        <div id="page-wrapper">
+          <!-- Header -->
+          <header id="header">
+            {{/if}}
+            <div id="fb-root"></div>
+            <div id="fb-root"></div>
+            <script>
+              (function (d, s, id) {
+                var js, fjs = d.getElementsByTagName(s)[0];
+                if (d.getElementById(id)) return;
+                js = d.createElement(s); js.id = id;
+                js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.9&appId=1981422115412589";
+                fjs.parentNode.insertBefore(js, fjs);
+              }(document, 'script', 'facebook-jssdk'));
+            </script>
+            <nav id="nav">
+              <ul>
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/contact">Contact Us</a></li>
+                {{#if isSignedIn}}
+                <li>
+                  <a href="#" class="icon fa-angle-down"><span>{{currentUserName.first}}</span><img src="https://hs-impact.herokuapp.com/img/blank_avatar.png" alt="Profile Pic" id="nav-profile-img" /></a>
+                  <ul>
+                    <li class="nav-submenu-li"><a href="/profile">Profile</a></li>
+                    <li class="nav-submenu-li"><a href="/inbox">Inbox</a></li>
+                    <li class="nav-submenu-li"><a href="/settings">Settings</a></li>
+                  </ul>
+                </li>
+                <li><a href="/auth/logout" class="button">Log Out</a></li>
+                {{else}}
+                <li><a href="/signup" class="button">Sign Up</a></li>
+                <li><a href="/login" class="button">Log In</a></li>
+                {{/if}}
+              </ul>
+            </nav>
+          </header>
+          <script>
+              console.log({{{error_msg }}})
+          </script>
+          {{#if error_msg}}
+          <div class="error-msg">
+            <h1>{{error_msg}}</h1>
+          </div>
+          {{/if}} {{{body}}}
 
-      {{{body}}}
+          <!-- Footer -->
+          <footer id="footer">
+            <ul class="icons">
+              <li><a href="https://www.facebook.com/highschoolimpact" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
+              <li><a href="https://www.instagram.com/hsimpact/" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
+            </ul>
+            <ul class="copyright">
+              <li>Copyright &copy; 2017 HS Imapct</li>
+              <li><a href="/legal/terms">Terms of Use</a></li>
+              <li><a href="/legal/privacy">Privacy Policy</a></li>
+              <li><a href="/terms">Site Map</a></li>
+            </ul>
+          </footer>
 
-      <!-- Footer -->
-      <footer id="footer">
-        <ul class="icons">
-          <li><a href="#" class="icon fa-facebook"><span class="label">Facebook</span></a></li>
-          <li><a href="#" class="icon fa-instagram"><span class="label">Instagram</span></a></li>
-        </ul>
-        <ul class="copyright">
-          <li>Copyright &copy; 2017 HS Imapct</li>
-          <li><a href="/terms">Terms of Use</a></li>
-          <li><a href="/terms">Privacy Policy</a></li>
-          <li><a href="/terms">Site Map</a></li>
-        </ul>
-      </footer>
+        </div>
+        <!-- Scripts -->
+        <script src="https://hs-impact.herokuapp.com/js/jquery.min.js"></script>
+        <script src="https://hs-impact.herokuapp.com/js/jquery.dropotron.min.js"></script>
+        <script src="https://hs-impact.herokuapp.com/js/jquery.scrollgress.min.js"></script>
+        <script src="https://hs-impact.herokuapp.com/js/skel.min.js"></script>
+        <script src="https://hs-impact.herokuapp.com/js/util.js"></script>
+        <!--[if lte IE 8]><script src="js/ie/respond.min.js"></script><![endif]-->
+        <script src="https://hs-impact.herokuapp.com/js/main.js"></script>
 
-    </div>
-    <!-- Scripts -->
-    <script src="js/jquery.min.js"></script>
-    <script src="js/jquery.dropotron.min.js"></script>
-    <script src="js/jquery.scrollgress.min.js"></script>
-    <script src="js/skel.min.js"></script>
-    <script src="js/util.js"></script>
-    <!--[if lte IE 8]><script src="js/ie/respond.min.js"></script><![endif]-->
-    <script src="js/main.js"></script>
-
-  </body>
+      </body>
 
 </html>

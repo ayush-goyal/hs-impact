@@ -23,7 +23,7 @@ gulp.task('clean', function() {
 });
 
 gulp.task('sass', function() {
-	return gulp.src(['src/sass/main.scss', 'src/sass/ie8.scss'])
+	return gulp.src(['src/sass/main.scss', 'src/sass/ie8.scss', 'src/sass/top.scss'])
 		.pipe(changed('public/css/'))
 		.pipe(sourcemaps.init())
 		.pipe(sass())

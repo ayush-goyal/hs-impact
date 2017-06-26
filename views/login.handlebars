@@ -3,7 +3,7 @@
     <h2>Log In</h2>
   </header>
   <div class="box">
-    <form method="post" action="/signup">
+    <form method="post" action="/auth/login">
       <div class="row uniform 50%">
         <div class="12u">
           <input type="email" name="email" placeholder="Email" />
@@ -21,14 +21,22 @@
           </ul>
         </div>
       </div>
-      <div class="row uniform">
-        <div class="12u">
-          <p class='align-center'>
-            <a href="/forgot-password">Forgot Password?</a>
-          </p>
-        </div>
-      </div>
     </form>
+    <div class="row uniform">
+      <div class="12u">
+        <p class='align-center'>
+          <a href="/forgot-password">Forgot Password?</a>
+        </p>
+      </div>
+    </div>
+    <div class="row uniform">
+      <div class="12u">
+        <ul class="actions align-center">
+          <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false"
+            data-use-continue-as="true"></div>
+        </ul>
+      </div>
+    </div>
   </div>
   <div class="row uniform">
     <div class="12u">

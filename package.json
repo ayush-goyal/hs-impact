@@ -37,8 +37,10 @@
     "express-handlebars": "^3.0.0",
     "express-session": "^1.15.3",
     "express-validator": "^3.2.0",
+    "helmet": "^3.6.1",
     "mongoose": "^4.10.8",
     "passport": "^0.3.2",
+    "passport-facebook": "^2.1.1",
     "passport-local": "^1.0.0"
   }
 }

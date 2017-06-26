@@ -3,7 +3,7 @@
     <h2>Sign Up</h2>
   </header>
   <div class="box">
-    <form method="post" action="/signup">
+    <form method="post" action="/auth/signup">
       <div class="row uniform 50%">
         <div class="6u 12u(mobilep)">
           <input type="text" name="firstName" placeholder="First Name" />
@@ -34,16 +34,24 @@
           </ul>
         </div>
       </div>
-      <div class="row uniform">
-        <div class="12u">
-          <p class='align-center'>
-            By signing up, you agree to the
-            <a href="/legal/terms/">Terms of Service </a> and
-            <a href="/legal/privacy/">Privacy Policy</a>
-          </p>
-        </div>
-      </div>
     </form>
+    <div class="row uniform">
+      <div class="12u">
+        <ul class="actions align-center">
+          <div class="fb-login-button" data-max-rows="1" data-size="large" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false"
+            data-use-continue-as="true"></div>
+        </ul>
+      </div>
+    </div>
+    <div class="row uniform">
+      <div class="12u">
+        <p class='align-center'>
+          By signing up, you agree to the
+          <a href="/legal/terms/">Terms of Use </a> and
+          <a href="/legal/privacy/">Privacy Policy</a>
+        </p>
+      </div>
+    </div>
   </div>
   <div class="row uniform">
     <div class="12u">

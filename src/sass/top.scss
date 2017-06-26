@@ -1,0 +1,21 @@
+.error-msg {
+	height: 60px;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #ede04d;
+	h1 {
+		margin: auto;
+		color: #112100;
+		font-size: 20px;
+	}
+}
+
+#nav-profile-img {
+	height: 1.55em;
+	margin-top: 0.2em;
+	border-radius: 50%;
+	margin-left: 10px;
+	float: right;
+}
