@@ -25,7 +25,7 @@ module.exports = function(passport) {
 					return done(err);
 				}
 				// if no user is found, return the message
-				if (!user || !user.validPassword(password)) {
+				if (!user || !user.local.password || !user.validPassword(password)) {
 					return done(null, false, {
 						'error_msg': 'Invalid email or password'
 					});
