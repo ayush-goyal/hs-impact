@@ -16,7 +16,7 @@ router.get('/facebook/return',
 	})
 );
 
-//GET /auth/logout
+//GET /auth/logout 
 router.get('/logout', function(req, res) {
 	req.session.destroy(function(err) {
 		res.redirect('/'); //Inside a callback… bulletproof!
@@ -31,9 +31,9 @@ function checkFieldsLogin(req, res, next) {
 	var errors = req.validationErrors();
 
 	if (errors) {
-		req.flash('loginMessage', errors[0].msg)
+		req.flash('error_msg', errors[0].msg)
 		res.render('login', {
-			error_msg: req.flash('loginMessage')
+			error_msg: req.flash('error_msg')
 		});
 	} else {
 		next();
@@ -50,9 +50,9 @@ function checkFieldsSignup(req, res, next) {
 	var errors = req.validationErrors();
 
 	if (errors) {
-		req.flash('signupMessage', errors[0].msg)
+		req.flash('error_msg', errors[0].msg)
 		res.render('signup', {
-			error_msg: req.flash('signupMessage')
+			error_msg: req.flash('error_msg')
 		});
 	} else {
 		next();
@@ -60,15 +60,25 @@ function checkFieldsSignup(req, res, next) {
 }
 
 // process the login form
-router.post('/login', checkFieldsLogin, passport.authenticate('local-login', {
-	failureRedirect: '/login',
-	failureFlash: true
-}), function(req, res) {
-	// If this function gets called, authentication was successful.
-	// `req.user` contains the authenticated user.
-	req.session.save(() => { // Explicitly save the session before redirecting!
-		res.redirect('/profile');
-	})
+router.post('/login', checkFieldsLogin, function(req, res, next) {
+	passport.authenticate('local-login', function(err, user, info) {
+		if (err) {
+			return next(err);
+		}
+		if (!user) {
+			console.log('info: ' + info.error_msg);
+			req.flash('error_msg', info.error_msg);
+			return res.redirect('/login');
+		}
+		req.logIn(user, function(err) {
+			if (err) {
+				return next(err);
+			}
+			req.session.save(() => { // Explicitly save the session before redirecting!
+				res.redirect('/profile');
+			})
+		});
+	})(req, res, next);
 });
 
 
