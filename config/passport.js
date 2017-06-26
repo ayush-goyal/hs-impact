@@ -30,7 +30,6 @@ module.exports = function(passport) {
 						'error_msg': 'Invalid email or password'
 					});
 				} else { // all is well, return user
-					console.log('here');
 					return done(null, user);
 				}
 			});
@@ -47,7 +46,6 @@ module.exports = function(passport) {
 		// asynchronous
 		process.nextTick(function() {
 			// if the user is not already logged in:
-			console.log('asdfsdfdf');
 			if (!req.user) {
 				User.findOne({
 					'email': email
@@ -56,10 +54,8 @@ module.exports = function(passport) {
 					if (err) {
 						return done(err);
 					}
-					console.log('asdfsdfsdf');
 					// check to see if theres already a user with that email
 					if (user) {
-						console.log('email taken');
 						return done(null, false, {
 							'error_msg': 'That email is already taken.'
 						});
@@ -77,7 +73,6 @@ module.exports = function(passport) {
 							if (err) {
 								return done(err);
 							}
-							console.log('sadf');
 							return done(null, newUser);
 						});
 					}
@@ -135,21 +130,16 @@ module.exports = function(passport) {
 						console.dir(req);
 						console.log("refreshtoken: " + refreshToken)*/
 			if (!req.user) {
-				console.log('hello');
 				User.findOne({
 					'facebook.id': profile.id
 				}, function(err, user) {
-					console.log('hello3');
 					if (err) {
 						console.log(err);
 						return done(err);
 					}
-					console.log('hello4');
 					if (user) {
-						console.log('hello5');
 						// if there is a user id already but no token (user was linked at one point and then removed)
 						if (!user.facebook.token) {
-							console.log('hello6');
 							user.facebook.token = accessToken;
 							if (profile.name.givenName && profile.name.familyName) {
 								user.name.first = profile.name.givenName;
@@ -176,10 +166,8 @@ module.exports = function(passport) {
 							user.save(function(err) {
 								if (err) {
 									console.error(err);
-									console.log('helleorj0');
 									return done(err);
 								}
-								console.log('helleorj0234');
 								return done(null, user);
 							});
 						}
@@ -187,7 +175,6 @@ module.exports = function(passport) {
 						return done(null, user); // user found, return that user
 					} else {
 						// if there is no user, create them
-						console.log('hello2');
 						var newUser = new User();
 
 						newUser.facebook.id = profile.id;
@@ -213,13 +200,11 @@ module.exports = function(passport) {
 							err.status = 400;
 							return done(err);
 						}
-						console.log('helleorj02dsf34');
 						newUser.save(function(err) {
 							if (err) {
 								console.log(err);
 								return done(err);
 							}
-							console.log('helleorj0234sdfdsf');
 							return done(null, newUser);
 						});
 					}

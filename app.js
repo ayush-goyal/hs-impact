@@ -38,6 +38,23 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
 	extended: false
 }));
+// Express Validator
+app.use(expressValidator({
+	errorFormatter: function(param, msg, value) {
+		var namespace = param.split('.'),
+			root = namespace.shift(),
+			formParam = root;
+
+		while (namespace.length) {
+			formParam += '[' + namespace.shift() + ']';
+		}
+		return {
+			param: formParam,
+			msg: msg,
+			value: value
+		};
+	}
+}));
 app.use(cookieParser());
 
 // Set Static Folder
@@ -57,24 +74,6 @@ app.use(session({
 app.use(passport.initialize());
 // Restore session (keeps returning users still signed in )
 app.use(passport.session());
-
-// Express Validator
-app.use(expressValidator({
-	errorFormatter: function(param, msg, value) {
-		var namespace = param.split('.'),
-			root = namespace.shift(),
-			formParam = root;
-
-		while (namespace.length) {
-			formParam += '[' + namespace.shift() + ']';
-		}
-		return {
-			param: formParam,
-			msg: msg,
-			value: value
-		};
-	}
-}));
 
 // Connect Flash
 app.use(flash());

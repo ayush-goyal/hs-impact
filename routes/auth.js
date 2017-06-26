@@ -47,6 +47,10 @@ function checkFieldsSignup(req, res, next) {
 	req.checkBody('email', 'Email is not valid').isEmail();
 	req.checkBody('password', 'Password is required').notEmpty();
 	req.checkBody('passwordConfirm', 'Passwords do not match').equals(req.body.password);
+	req.checkBody('password', 'Password must be at least 6 characters long').isLength({
+		min: 6,
+		max: 100
+	});
 	var errors = req.validationErrors();
 
 	if (errors) {
@@ -89,7 +93,6 @@ router.post('/signup', checkFieldsSignup, function(req, res, next) {
 			return next(err);
 		}
 		if (!user) {
-			console.log('info: ' + info.error_msg);
 			req.flash('error_msg', info.error_msg);
 			return res.redirect('/signup');
 		}

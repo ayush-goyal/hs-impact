@@ -10,7 +10,6 @@ let transporter = nodemailer.createTransport({
 	}
 });
 
-
 // Get Homepage
 router.get('/', function(req, res) {
 	res.render('index', {
@@ -70,7 +69,7 @@ router.get('/about', function(req, res) {
 	res.render('about');
 });
 
-// Get Terms
+// Get Terms 
 router.get('/legal/terms', function(req, res) {
 	res.render('terms');
 });
@@ -80,15 +79,23 @@ router.get('/legal/privacy', function(req, res) {
 	res.render('privacy');
 });
 
+function isLoggedIn(req, res, next) {
+	if (req.isAuthenticated()) {
+		res.redirect('/profile');
+	} else {
+		return next();
+	}
+}
+
 // show the login form
-router.get('/login', function(req, res) {
+router.get('/login', isLoggedIn, function(req, res) {
 	res.render('login', {
 		error_msg: req.flash('error_msg')
 	});
 });
 
 // show the signup form
-router.get('/signup', function(req, res) {
+router.get('/signup', isLoggedIn, function(req, res) {
 	res.render('signup', {
 		error_msg: req.flash('error_msg')
 	});
