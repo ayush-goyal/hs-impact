@@ -4,15 +4,21 @@
 <head>
   <title>HS Impact</title>
   <meta charset="utf-8" />
+  <script>
+    (function (d) {
+      var config = {
+        kitId: 'cdk6rxa',
+        scriptTimeout: 3000,
+        async: true
+      },
+        h = d.documentElement, t = setTimeout(function () { h.className = h.className.replace(/\bwf-loading\b/g, "") + " wf-inactive"; }, config.scriptTimeout), tk = d.createElement("script"), f = false, s = d.getElementsByTagName("script")[0], a; h.className += " wf-loading"; tk.src = 'https://use.typekit.net/' + config.kitId + '.js'; tk.async = true; tk.onload = tk.onreadystatechange = function () { a = this.readyState; if (f || a && a != "complete" && a != "loaded") return; f = true; clearTimeout(t); try { Typekit.load(config) } catch (e) { } }; s.parentNode.insertBefore(tk, s)
+    })(document);
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <!--[if lte IE 8]><script src="js/ie/html5shiv.js"></script><![endif]-->
   <link rel="stylesheet" href="https://hs-impact.herokuapp.com/css/main.css" />
   <link rel="stylesheet" href="https://hs-impact.herokuapp.com/css/top.css" />
   <link rel="stylesheet" href="https://hs-impact.herokuapp.com/css/font-awesome.min.css" />
-  <script src="https://use.typekit.net/cdk6rxa.js"></script>
-  <script>
-    try { Typekit.load({ async: true }); } catch (e) { }
-  </script>
   <!--[if lte IE 8]><link rel="stylesheet" href="css/ie8.css" /><![endif]-->
 </head>
 {{#if isHomePage}}
@@ -62,12 +68,13 @@
               </ul>
             </nav>
           </header>
-          <script>
-              console.log({{{error_msg }}})
-          </script>
           {{#if error_msg}}
-          <div class="error-msg">
+          <div class="msg error">
             <h1>{{error_msg}}</h1>
+          </div>
+          {{/if}} {{#if success_msg}}
+          <div class="msg success">
+            <h1>{{success_msg}}</h1>
           </div>
           {{/if}} {{{body}}}
 

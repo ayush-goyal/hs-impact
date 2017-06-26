@@ -1,22 +1,68 @@
 var express = require('express');
 var router = express.Router();
+var nodemailer = require('nodemailer');
+
+let transporter = nodemailer.createTransport({
+	service: "Gmail",
+	auth: {
+		user: 'agoyal2001@gmail.com',
+		pass: process.env.HSIMPACT_GMAIL_PASSWORD
+	}
+});
+
 
 // Get Homepage
 router.get('/', function(req, res) {
 	res.render('index', {
-		isHomePage: true
+		isHomePage: true,
+		signup_msg: req.flash('signup_msg')
 	});
 });
 
+// Post Homepage
+router.post('/send', function(req, res) {
+	var emailText = 'Signup: ' + req.body.email;
+	let mailOptions = {
+		from: '"Ayush Goyal" <agoyal2001@gmail.com>', // sender address
+		to: 'agoyal2001@gmail.com', // list of receivers
+		subject: 'HS Impact App - Signup', // Subject line
+		text: emailText
+	};
+	// send mail with defined transport object
+	transporter.sendMail(mailOptions, (error, info) => {
+		if (error) {
+			return console.log(error);
+		}
+		req.flash('signup_msg', true);
+		res.redirect('/#cta');
+	});
+});
+
+
 // Get Contact
 router.get('/contact', function(req, res) {
-	res.render('contact');
+	res.render('contact', {
+		success_msg: req.flash('success_msg')
+	});
 });
 
 // Post Contact
-router.post('/contact', function(req, res) {
-	//TODO: ADD POST FUNCTIONALITY
-	console.log("Message submitted");
+router.post('/contact/send', function(req, res) {
+	var emailText = 'From: ' + req.body.name + ' Email: ' + req.body.email + ' Subject: ' + req.body.subject + ' Message: ' + req.body.message;
+	let mailOptions = {
+		from: '"Ayush Goyal" <agoyal2001@gmail.com>', // sender address
+		to: 'agoyal2001@gmail.com', // list of receivers
+		subject: 'HS Impact App - Contact Form', // Subject line
+		text: emailText
+	};
+	// send mail with defined transport object
+	transporter.sendMail(mailOptions, (error, info) => {
+		if (error) {
+			return console.log(error);
+		}
+		req.flash('success_msg', 'Message sent. Thank you for your feedback!');
+		res.redirect('/contact');
+	});
 });
 
 // Get About

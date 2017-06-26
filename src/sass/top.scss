@@ -1,15 +1,22 @@
-.error-msg {
+.msg {
 	height: 60px;
 	width: 100%;
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background-color: #ede04d;
 	h1 {
 		margin: auto;
 		color: #112100;
 		font-size: 20px;
 	}
+}
+
+.error {
+	background-color: #ede04d;
+}
+
+.success {
+	background-color: #22bb45;
 }
 
 #nav-profile-img {

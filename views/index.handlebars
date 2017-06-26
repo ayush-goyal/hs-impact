@@ -25,7 +25,16 @@
 		<h2>Sign up for beta access</h2>
 		<p>And support the next generation of entrepreneurs</p>
 
-		<form method="post" action="/">
+		{{#if signup_msg}}
+		<div class="row uniform">
+			<div class="12u">
+				<p class='align-center'>
+					Thank you for signing up!
+				</p>
+			</div>
+		</div>
+		{{else}}
+		<form method="post" action="/send">
 			<div class="row uniform 50%">
 				<div class="8u 12u(mobilep)">
 					<input type="email" name="email" placeholder="Email Address" />
@@ -35,7 +44,7 @@
 				</div>
 			</div>
 		</form>
-
+		{{/if}}
 	</section>
 	<section class="box special features">
 		<div class="features-row">

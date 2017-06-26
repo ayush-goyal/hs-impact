@@ -10,7 +10,7 @@ var MongoStore = require('connect-mongo')(session);
 var passport = require('passport');
 var mongo = require('mongodb');
 var mongoose = require('mongoose');
-var helmet = require('helmet')
+var helmet = require('helmet');
 
 var url = process.env.HSIMPACT_MONGOLAB_URI;
 mongoose.Promise = global.Promise;
