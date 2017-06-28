@@ -83,7 +83,7 @@ router.get('/legal/privacy', function(req, res) {
 
 function isLoggedIn(req, res, next) {
 	if (req.isAuthenticated()) {
-		if (req.user.address.city) {
+		if (req.user.profile.address.city) {
 			res.redirect('/user/' + (req.user.profile.username).toLowerCase());
 		} else {
 			if (req.user.profile.account_type == "Student") {

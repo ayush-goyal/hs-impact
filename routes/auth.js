@@ -80,7 +80,7 @@ router.post('/login', checkFieldsLogin, function(req, res, next) {
 				return next(err);
 			}
 			req.session.save(() => { // Explicitly save the session before redirecting!
-				if (req.user.address.city) {
+				if (req.user.profile.address.city) {
 					res.redirect('/user/' + (req.user.profile.username).toLowerCase());
 				} else {
 					if (req.user.profile.account_type == "Student") {
