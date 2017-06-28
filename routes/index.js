@@ -83,7 +83,19 @@ router.get('/legal/privacy', function(req, res) {
 
 function isLoggedIn(req, res, next) {
 	if (req.isAuthenticated()) {
-		res.redirect('/user/' + (req.user.profile.username).toLowerCase());
+		if (req.user.address.city) {
+			res.redirect('/user/' + (req.user.profile.username).toLowerCase());
+		} else {
+			if (req.user.profile.account_type == "Student") {
+				res.redirect('/signup/new/student');
+			} else if (req.user.profile.account_type == "Parent") {
+				res.redirect('/signup/new/parent');
+			} else {
+				var err = new Error('User account type invalid');
+				err.status = 400;
+				next(err);
+			}
+		}
 	} else {
 		return next();
 	}

@@ -80,7 +80,19 @@ router.post('/login', checkFieldsLogin, function(req, res, next) {
 				return next(err);
 			}
 			req.session.save(() => { // Explicitly save the session before redirecting!
-				res.redirect('/user/' + (req.user.profile.username).toLowerCase());
+				if (req.user.address.city) {
+					res.redirect('/user/' + (req.user.profile.username).toLowerCase());
+				} else {
+					if (req.user.profile.account_type == "Student") {
+						res.redirect('/signup/new/student');
+					} else if (req.user.profile.account_type == "Parent") {
+						res.redirect('/signup/new/parent');
+					} else {
+						var err = new Error('User account type invalid');
+						err.status = 400;
+						next(err);
+					}
+				}
 			})
 		});
 	})(req, res, next);
@@ -151,7 +163,7 @@ router.post('/signup/new/student', function(req, res) {
 						if (err) {
 							throw err;
 						} else {
-							res.redirect('/user/' + (req.user.profile.username).toLowerCase());
+							res.redirect('/user/' + (req.body.username).toLowerCase());
 						}
 					})
 				}
@@ -190,7 +202,7 @@ router.post('/signup/new/parent', function(req, res) {
 						if (err) {
 							throw err;
 						} else {
-							res.redirect('/user/' + (req.user.profile.username).toLowerCase());
+							res.redirect('/user/' + (req.body.username).toLowerCase());
 						}
 					})
 				}
