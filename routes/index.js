@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var nodemailer = require('nodemailer');
 
+var User = require('../models/user');
+
 let transporter = nodemailer.createTransport({
 	service: "Gmail",
 	auth: {
@@ -81,7 +83,7 @@ router.get('/legal/privacy', function(req, res) {
 
 function isLoggedIn(req, res, next) {
 	if (req.isAuthenticated()) {
-		res.redirect('/profile');
+		res.redirect('/user/' + (req.body.username).toLowerCase());
 	} else {
 		return next();
 	}
@@ -102,21 +104,105 @@ router.get('/signup', isLoggedIn, function(req, res) {
 });
 
 
+
 function ensureAuthenticated(req, res, next) {
 	if (req.isAuthenticated()) {
-		return next();
+		if (req.user.profile.address.city && req.user.local.phone.area_code) {
+			console.log(req.user.local.phone);
+			console.log('next');
+			return next();
+		} else {
+			if (req.user.profile.account_type == "Student") {
+				res.redirect('/signup/new/student');
+			} else if (req.user.profile.account_type == "Parent") {
+				res.redirect('/signup/new/parent');
+			} else {
+				var err = new Error('User account type invalid');
+				err.status = 400;
+				next(err);
+			}
+		}
 	} else {
 		req.flash('error_msg', 'You must be logged in to view this page');
 		res.redirect('/login');
 	}
 }
 
-router.get('/profile', ensureAuthenticated, function(req, res) {
-	res.render('profile', {
-		name: req.user.name
+function infoFilledOut(req, res, next) {
+	if (req.isAuthenticated()) {
+		if (req.user.profile.address.city && req.user.local.phone.area_code) {
+			res.redirect('/user/' + (req.body.username).toLowerCase());
+		} else {
+			next();
+		}
+	} else {
+		req.flash('error_msg', 'You must be logged in to view this page');
+		res.redirect('/login');
+	}
+}
+
+router.get('/signup/new/student', infoFilledOut, function(req, res) {
+	res.render('signup-new-student', {
+		error_msg: req.flash('error_msg')
 	});
 });
 
+router.get('/signup/new/parent', infoFilledOut, function(req, res) {
+	res.render('signup-new-parent', {
+		error_msg: req.flash('error_msg')
+	});
+});
+
+router.get('/user', ensureAuthenticated, function(req, res) {
+	res.redirect('/');
+})
+
+router.get('/user/:username', ensureAuthenticated, function(req, res, next) {
+	if (req.user.profile.username == req.params.username) {
+		res.render('profile');
+	} else {
+		User.findOne({
+			'profile.username': req.params.username
+		}, function(err, user) {
+			if (err) {
+				next(err);
+			}
+			// check to see if theres already a user with that username 
+			if (user) {
+				res.render('profile-other', {
+					otherProfile: user.profile
+				})
+			} else { // else return user not found
+				var err = new Error('User profile not found');
+				err.status = 404;
+				next(err);
+			}
+		})
+	}
+});
+
+router.get('/account/profile', ensureAuthenticated, function(req, res) {
+	res.render('account-profile');
+});
+
+router.get('/account/settings', ensureAuthenticated, function(req, res) {
+	res.render('account-settings', {
+		email: req.user.local.email,
+		phone: req.user.local.phone
+	});
+});
+
+router.get('/account/notifications', ensureAuthenticated, function(req, res) {
+	res.render('account-notifications');
+});
+
+router.get('/account/password', ensureAuthenticated, function(req, res) {
+	res.render('account-password');
+});
+
+router.get('/account/payment', ensureAuthenticated, function(req, res) {
+	res.render('account-payment');
+});
 
 module.exports = router;
 

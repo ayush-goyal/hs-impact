@@ -26,3 +26,28 @@
 	margin-left: 10px;
 	float: right;
 }
+
+#profile-nav {
+	float: left;
+	width: 28%;
+	height: 500px;
+	margin-right: 2%;
+	padding-top: 3%;
+	padding-left: 2%;
+	li {
+		transition: .2s ease-in-out;
+		padding-top: 10px;
+	}
+	a:hover {
+		li {
+			color: #232323;
+		}
+	}
+}
+
+.profile-main {
+	float: right !important;
+	width: 68% !important;
+	padding-top: 3%;
+	padding-right: 2%;
+}

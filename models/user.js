@@ -3,33 +3,92 @@ var bcrypt = require('bcrypt');
 
 // User Schema
 var UserSchema = mongoose.Schema({
-	name: {
-		first: {
-			type: String,
+	profile: {
+		username: {
+			type: String
 		},
-		last: {
-			type: String,
+		name: {
+			first: {
+				type: String
+			},
+			last: {
+				type: String
+			}
+		},
+		school: {
+			type: String
+		},
+		date_of_birth: {
+			month: {
+				type: String
+			},
+			day: {
+				type: String
+			},
+			year: {
+				type: String
+			}
+		},
+		biography: {
+			type: String
+		},
+		account_type: {
+			type: String
+		},
+		address: {
+			line_1: {
+				type: String
+			},
+			line_2: {
+				type: String
+			},
+			city: {
+				type: String
+			},
+			state: {
+				type: String
+			},
+			zip: {
+				type: String
+			}
 		}
 	},
-	email: {
-		type: String,
-	},
 	local: {
+		email: {
+			type: String
+		},
 		password: {
-			type: String,
+			type: String
+		},
+		phone: {
+			area_code: {
+				type: String
+			},
+			prefix: {
+				type: String
+			},
+			line_number: {
+				type: String
+			}
 		}
 	},
 	facebook: {
 		id: {
-			type: String,
+			type: String
 		},
 		token: {
-			type: String,
+			type: String
+		}
+	},
+	verification: {
+		phone: {
+			type: String
+		},
+		email: {
+			type: String
 		}
 	}
 });
-
-
 
 
 // generating a hash

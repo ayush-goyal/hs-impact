@@ -1,0 +1,62 @@
+<div id="profile-wrapper">
+  <div id="profile-nav">
+    <div class="box">
+      <ul class="alt">
+        <a href="/account/profile">
+          <li style="border-top: none">Profile Info</li>
+        </a>
+        <a href="/account/settings">
+          <li>Account Settings</li>
+        </a>
+        <a href="/account/notifications">
+          <li>Email Notifications</li>
+        </a>
+        <a href="/account/payment">
+          <li>Payment</li>
+        </a>
+      </ul>
+    </div>
+  </div>
+  <section id="main" class="container profile-main" style="padding: 3% 2% 0 0">
+    <div class="box">
+      <form method="post" action="/auth/account/update">
+        <div class="row uniform 50%">
+          <h4 style="font-weight: bold">Phone Number</h4>
+        </div>
+        <div class="row uniform 50%">
+          <h3>(</h3>
+          <div class="2u 12u(mobilep)">
+            <input type="tel" name="phone1" pattern="\d{3}" maxlength="3" value="{{phone.area_code}}" required />
+          </div>
+          <h3>) - </h3>
+          <div class="2u 12u(mobilep)">
+            <input type="tel" name="phone2" pattern="\d{3}" maxlength="3" value="{{phone.prefix}}" required />
+          </div>
+          <h3> - </h3>
+          <div class="2u 12u(mobilep)">
+            <input type="tel" name="phone3" pattern="\d{4}" maxlength="4" value="{{phone.line_number}}" required />
+          </div>
+        </div>
+        <div class="row uniform 50%">
+          <div class="10u">
+            <h4 style="font-weight: bold">Email</h4>
+            <input type="email" name="email" value="{{email}}" required />
+          </div>
+        </div>
+        <div class="row uniform 50%">
+          <div class="4u">
+            <a href="/account/password" class="button alt fit">Change Password</a>
+          </div>
+        </div>
+        <div class="row uniform">
+          <div class="12u">
+            <ul class="actions align-center">
+              <li><input type="submit" value="Save" /></li>
+            </ul>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+  <div style="clear: both;"></div>
+</div>

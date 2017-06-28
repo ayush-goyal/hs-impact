@@ -21,7 +21,7 @@ db.on('error', console.error.bind(console, 'Connection error:'));
 
 require('./config/passport')(passport); // pass passport for configuration
 
-// Init App
+// Init App 
 var app = express();
 
 app.use(helmet());
@@ -83,7 +83,7 @@ app.use(function(req, res, next) {
 	if (req.isAuthenticated()) {
 		res.locals.isSignedIn = true;
 		if (req.user) {
-			res.locals.currentUserName = req.user.name;
+			res.locals.profile = req.user.profile;
 		}
 	}
 	next();
@@ -110,8 +110,7 @@ app.use(function(err, req, res, next) {
 	res.status(err.status || 500);
 	res.render('error', {
 		message: err.message,
-		status: err.status,
-		error: {}
+		status: err.status
 	});
 });
 

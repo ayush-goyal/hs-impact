@@ -237,6 +237,7 @@ label {
 input[type="text"],
 input[type="password"],
 input[type="email"],
+input[type="tel"],
 select,
 textarea {
 	@include vendor('appearance',
@@ -284,6 +285,7 @@ textarea {
 input[type="text"],
 input[type="password"],
 input[type="email"],
+input[type="tel"],
 select {
 	height: _size(element-height);
 }
@@ -591,10 +593,6 @@ ul {
 		li {
 			border-top: solid 1px _palette(border);
 			padding: 0.5em 0;
-			&:first-child {
-				border-top: 0;
-				padding-top: 0;
-			}
 		}
 	}
 	&.icons {
@@ -1211,6 +1209,7 @@ body.landing {
 	input[type="text"],
 	input[type="password"],
 	input[type="email"],
+	input[type="tel"],
 	select,
 	textarea {
 		color: _palette(accent2, fg-bold);

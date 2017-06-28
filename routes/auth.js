@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var passport = require('passport');
 
+var User = require('../models/user');
+
 //GET /auth/login/facebook
 router.get('/facebook',
 	passport.authenticate('facebook', {
@@ -70,7 +72,6 @@ router.post('/login', checkFieldsLogin, function(req, res, next) {
 			return next(err);
 		}
 		if (!user) {
-			console.log('info: ' + info.error_msg);
 			req.flash('error_msg', info.error_msg);
 			return res.redirect('/login');
 		}
@@ -79,7 +80,7 @@ router.post('/login', checkFieldsLogin, function(req, res, next) {
 				return next(err);
 			}
 			req.session.save(() => { // Explicitly save the session before redirecting!
-				res.redirect('/profile');
+				res.redirect('/user/' + (req.body.username).toLowerCase());
 			})
 		});
 	})(req, res, next);
@@ -101,12 +102,166 @@ router.post('/signup', checkFieldsSignup, function(req, res, next) {
 				return next(err);
 			}
 			req.session.save(() => { // Explicitly save the session before redirecting!
-				res.redirect('/profile');
+				if (req.user.profile.account_type == "Student") {
+					res.redirect('/signup/new/student');
+				} else if (req.user.profile.account_type == "Parent") {
+					res.redirect('/signup/new/parent');
+				} else {
+					var err = new Error('User account type invalid');
+					err.status = 400;
+					next(err);
+				}
 			})
 		});
 	})(req, res, next);
 });
 
+
+// post /auth/signup/new/student
+router.post('/signup/new/student', function(req, res) {
+	User.findById(req.user.id, function(err, user) {
+		if (err) {
+			throw err;
+		} else {
+			User.findOne({
+				'profile.username': (req.body.username).toLowerCase()
+			}, function(err, userCheck) {
+				if (err) {
+					throw (err);
+				}
+				// check to see if theres already a user with that username
+				if (userCheck) {
+					req.flash('error_msg', 'Username already exists');
+					res.redirect('/signup/new/student');
+				} else { // else return user not found
+					user.profile.username = (req.body.username).toLowerCase();
+					user.local.phone.area_code = req.body.phone1;
+					user.local.phone.prefix = req.body.phone2;
+					user.local.phone.line_number = req.body.phone3;
+					user.profile.date_of_birth.month = req.body.date_of_birth.slice(0, 2);
+					user.profile.date_of_birth.day = req.body.date_of_birth.slice(3, 5);
+					user.profile.date_of_birth.year = req.body.date_of_birth.slice(6, 10);
+					user.profile.school = req.body.school;
+					user.profile.address.line_1 = req.body.line_1;
+					user.profile.address.line_2 = req.body.line_2;
+					user.profile.address.city = (req.body.city).charAt(0).toUpperCase() + req.body.city.slice(1).toLowerCase();
+					user.profile.address.state = req.body.state;
+					user.profile.address.zip = req.body.zip;
+					user.save(function(err) {
+						if (err) {
+							throw err;
+						} else {
+							res.redirect('/user/' + (req.body.username).toLowerCase());
+						}
+					})
+				}
+			})
+		}
+	})
+});
+
+// post /auth/signup/new/parent
+router.post('/signup/new/parent', function(req, res) {
+	User.findById(req.user.id, function(err, user) {
+		if (err) {
+			throw err;
+		} else {
+			User.findOne({
+				'profile.username': (req.body.username).toLowerCase()
+			}, function(err, userCheck) {
+				if (err) {
+					throw (err);
+				}
+				// check to see if theres already a user with that username
+				if (userCheck) {
+					req.flash('error_msg', 'Username already exists');
+					res.redirect('/signup/new/parent');
+				} else { // else return user not found
+					user.profile.username = (req.body.username).toLowerCase();
+					user.local.phone.area_code = req.body.phone1;
+					user.local.phone.prefix = req.body.phone2;
+					user.local.phone.line_number = req.body.phone3;
+					user.profile.address.line_1 = req.body.line_1;
+					user.profile.address.line_2 = req.body.line_2;
+					user.profile.address.city = (req.body.city).charAt(0).toUpperCase() + req.body.city.slice(1).toLowerCase();
+					user.profile.address.state = req.body.state;
+					user.profile.address.zip = req.body.zip;
+					user.save(function(err) {
+						if (err) {
+							throw err;
+						} else {
+							res.redirect('/user/' + (req.body.username).toLowerCase());
+						}
+					})
+				}
+			})
+		}
+	})
+});
+
+// post /auth/account/profile/update
+router.post('/account/profile/update', function(req, res) {
+	User.findById(req.user.id, function(err, user) {
+		if (err) {
+			throw err;
+		} else {
+			user.profile.name.first = req.body.firstName;
+			user.profile.name.last = req.body.lastName;
+			user.profile.address.line_1 = req.body.line_1;
+			user.profile.address.line_2 = req.body.line_2;
+			user.profile.address.city = (req.body.city).charAt(0).toUpperCase() + req.body.city.slice(1).toLowerCase();
+			user.profile.address.state = req.body.state;
+			user.profile.address.zip = req.body.zip;
+			user.profile.biography = req.body.biography;
+			user.save(function(err) {
+				if (err) {
+					throw err;
+				} else {
+					res.redirect('/user/' + (req.body.username).toLowerCase());
+				}
+			})
+		}
+	})
+});
+
+// post /auth/account/update
+router.post('/account/update', function(req, res) {
+	User.findById(req.user.id, function(err, user) {
+		if (err) {
+			throw err;
+		} else {
+			user.local.phone.area_code = req.body.phone1;
+			user.local.phone.prefix = req.body.phone2;
+			user.local.phone.line_number = req.body.phone3;
+			user.local.email = req.body.email;
+			user.save(function(err) {
+				if (err) {
+					throw err;
+				} else {
+					res.redirect('/user/' + (req.body.username).toLowerCase());
+				}
+			})
+		}
+	})
+});
+
+// post /auth/account/password/update
+router.post('/account/password/update', function(req, res) {
+	User.findById(req.user.id, function(err, user) {
+		if (err) {
+			throw err;
+		} else {
+			user.local.password = user.generateHash(req.body.password);
+			user.save(function(err) {
+				if (err) {
+					throw err;
+				} else {
+					res.redirect('/user/' + (req.body.username).toLowerCase());
+				}
+			})
+		}
+	})
+});
 
 
 

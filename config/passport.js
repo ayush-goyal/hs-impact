@@ -18,7 +18,7 @@ module.exports = function(passport) {
 	}, function(req, email, password, done) {
 		process.nextTick(function() { // asynchronous
 			User.findOne({
-				'email': email
+				'local.email': email
 			}, function(err, user) {
 				// if there are any errors, return the error
 				if (err) {
@@ -48,7 +48,7 @@ module.exports = function(passport) {
 			// if the user is not already logged in:
 			if (!req.user) {
 				User.findOne({
-					'email': email
+					'local.email': email
 				}, function(err, user) {
 					// if there are any errors, return the error
 					if (err) {
@@ -57,20 +57,21 @@ module.exports = function(passport) {
 					// check to see if theres already a user with that email
 					if (user) {
 						return done(null, false, {
-							'error_msg': 'That email is already taken.'
+							'error_msg': 'That email is already taken'
 						});
 					} else {
 
 						// create the user
 						var newUser = new User();
-
-						newUser.email = email;
-						newUser.name.first = req.body.firstName;
-						newUser.name.last = req.body.lastName;
+						newUser.local.email = email;
+						//TODO: Send Welcome Email & Verification
+						newUser.profile.account_type = req.body.account_type;
+						newUser.profile.name.first = req.body.firstName;
+						newUser.profile.name.last = req.body.lastName;
 						newUser.local.password = newUser.generateHash(password);
-
 						newUser.save(function(err) {
 							if (err) {
+								console.log(err);
 								return done(err);
 							}
 							return done(null, newUser);
@@ -95,9 +96,10 @@ module.exports = function(passport) {
 						// Using 'loginMessage instead of signupMessage because it's used by /connect/local'
 					} else {
 						var user = req.user;
-						user.email = email;
-						newUser.name.first = req.body.firstName;
-						newUser.name.last = req.body.lastName;
+						user.local.email = email;
+						user.profile.account_type = req.body.account_type;
+						user.profile.name.first = req.body.firstName;
+						user.profile.name.last = req.body.lastName;
 						user.local.password = user.generateHash(password);
 						user.save(function(err) {
 							if (err) {
@@ -142,21 +144,21 @@ module.exports = function(passport) {
 						if (!user.facebook.token) {
 							user.facebook.token = accessToken;
 							if (profile.name.givenName && profile.name.familyName) {
-								user.name.first = profile.name.givenName;
-								user.name.last = profile.name.familyName;
+								user.profile.name.first = profile.name.givenName;
+								user.profile.name.last = profile.name.familyName;
 							} else if (profile.displayName) {
-								user.name.first = profile.displayName;
-								user.name.last = ' ';
+								user.profile.name.first = profile.displayName;
+								user.profile.name.last = ' ';
 							} else if (profile.username) {
-								user.name.first = profile.username;
-								user.name.last = ' ';
+								user.profile.name.first = profile.username;
+								user.profile.name.last = ' ';
 							} else {
 								var err = new Error('Facebook profile does not provide a valid name. Please create an account.');
 								err.status = 400;
 								return done(err);
 							}
 							if (profile.emails[0].value) {
-								user.email = (profile.emails[0].value || '').toLowerCase();
+								user.local.email = (profile.emails[0].value || '').toLowerCase();
 							} else {
 								var err = new Error('Facebook profile does not provide a valid email. Please create an account.');
 								err.status = 400;
@@ -180,21 +182,21 @@ module.exports = function(passport) {
 						newUser.facebook.id = profile.id;
 						newUser.facebook.token = accessToken;
 						if (profile.name.givenName && profile.name.familyName) {
-							newUser.name.first = profile.name.givenName;
-							newUser.name.last = profile.name.familyName;
+							newUser.profile.name.first = profile.name.givenName;
+							newUser.profile.name.last = profile.name.familyName;
 						} else if (profile.displayName) {
-							newUser.name.first = profile.displayName;
-							newUser.name.last = ' ';
+							newUser.profile.name.first = profile.displayName;
+							newUser.profile.name.last = ' ';
 						} else if (profile.username) {
-							newUser.name.first = profile.username;
-							newUser.name.last = ' ';
+							newUser.profile.name.first = profile.username;
+							newUser.profile.name.last = ' ';
 						} else {
 							var err = new Error('Facebook profile does not provide a valid name. Please create an account.');
 							err.status = 400;
 							return done(err);
 						}
 						if (profile.emails[0].value) {
-							newUser.email = (profile.emails[0].value || '').toLowerCase();
+							newUser.local.email = (profile.emails[0].value || '').toLowerCase();
 						} else {
 							var err = new Error('Facebook profile does not provide a valid email. Please create an account.');
 							err.status = 400;
@@ -217,21 +219,21 @@ module.exports = function(passport) {
 				user.facebook.id = profile.id;
 				user.facebook.token = accessToken;
 				if (profile.name.givenName && profile.name.familyName) {
-					user.name.first = profile.name.givenName;
-					user.name.last = profile.name.familyName;
+					user.profile.name.first = profile.name.givenName;
+					user.profile.name.last = profile.name.familyName;
 				} else if (profile.displayName) {
-					user.name.first = profile.displayName;
-					user.name.last = ' ';
+					user.profile.name.first = profile.displayName;
+					user.profile.name.last = ' ';
 				} else if (profile.username) {
-					user.name.first = profile.username;
-					user.name.last = ' ';
+					user.profile.name.first = profile.username;
+					user.profile.name.last = ' ';
 				} else {
 					var err = new Error('Facebook profile does not provide a valid name. Please create an account.');
 					err.status = 400;
 					return done(err);
 				}
 				if (profile.emails[0].value) {
-					user.email = (profile.emails[0].value || '').toLowerCase();
+					user.local.email = (profile.emails[0].value || '').toLowerCase();
 				} else {
 					var err = new Error('Facebook profile does not provide a valid email. Please create an account.');
 					err.status = 400;

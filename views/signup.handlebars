@@ -6,25 +6,38 @@
     <form method="post" action="/auth/signup">
       <div class="row uniform 50%">
         <div class="6u 12u(mobilep)">
-          <input type="text" name="firstName" placeholder="First Name" />
+          <input type="text" name="firstName" placeholder="First Name" required />
         </div>
         <div class="6u 12u(mobilep)">
-          <input type="text" name="lastName" placeholder="Last Name" />
+          <input type="text" name="lastName" placeholder="Last Name" required />
         </div>
       </div>
       <div class="row uniform 50%">
         <div class="12u">
-          <input type="email" name="email" placeholder="Email" />
+          <input type="email" name="email" placeholder="Email" required />
         </div>
       </div>
       <div class="row uniform 50%">
         <div class="12u">
-          <input type="password" name="password" placeholder="Password" />
+          <input type="password" name="password" placeholder="Password" required />
         </div>
       </div>
       <div class="row uniform 50%">
         <div class="12u">
-          <input type="password" name="passwordConfirm" placeholder="Confirm Password" />
+          <input type="password" name="passwordConfirm" placeholder="Confirm Password" required />
+        </div>
+      </div>
+      <div class="row uniform 50%">
+        <h4 style="font-weight: bold">Account Type</h4>
+      </div>
+      <div class="row uniform 50%">
+        <div class="5u 12u(narrower)">
+          <input type="radio" id="student" name="account_type" value="Student" checked>
+          <label for="student">Student</label>
+        </div>
+        <div class="5u 12u(narrower)">
+          <input type="radio" id="parent" name="account_type" value="Parent">
+          <label for="parent">Parent</label>
         </div>
       </div>
       <div class="row uniform">

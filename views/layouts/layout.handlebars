@@ -53,11 +53,11 @@
                 <li><a href="/contact">Contact Us</a></li>
                 {{#if isSignedIn}}
                 <li>
-                  <a href="#" class="icon fa-angle-down"><span>{{currentUserName.first}}</span><img src="https://hs-impact.herokuapp.com/img/blank_avatar.png" alt="Profile Pic" id="nav-profile-img" /></a>
+                  <a href="#" class="icon fa-angle-down"><span>{{profile.name.first}}</span><img src="https://hs-impact.herokuapp.com/img/blank_avatar.png" alt="Profile Pic" id="nav-profile-img" /></a>
                   <ul>
-                    <li class="nav-submenu-li"><a href="/profile">Profile</a></li>
+                    <li class="nav-submenu-li"><a href="/user/{{profile.username}}">Profile</a></li>
                     <li class="nav-submenu-li"><a href="/inbox">Inbox</a></li>
-                    <li class="nav-submenu-li"><a href="/settings">Settings</a></li>
+                    <li class="nav-submenu-li"><a href="/account/settings">Settings</a></li>
                   </ul>
                 </li>
                 <li><a href="/auth/logout" class="button">Log Out</a></li>
@@ -101,7 +101,6 @@
         <script src="https://hs-impact.herokuapp.com/js/util.js"></script>
         <!--[if lte IE 8]><script src="js/ie/respond.min.js"></script><![endif]-->
         <script src="https://hs-impact.herokuapp.com/js/main.js"></script>
-
       </body>
 
 </html>
