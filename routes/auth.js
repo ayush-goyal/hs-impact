@@ -80,7 +80,7 @@ router.post('/login', checkFieldsLogin, function(req, res, next) {
 				return next(err);
 			}
 			req.session.save(() => { // Explicitly save the session before redirecting!
-				res.redirect('/user/' + (req.body.username).toLowerCase());
+				res.redirect('/user/' + (req.user.profile.username).toLowerCase());
 			})
 		});
 	})(req, res, next);
@@ -151,7 +151,7 @@ router.post('/signup/new/student', function(req, res) {
 						if (err) {
 							throw err;
 						} else {
-							res.redirect('/user/' + (req.body.username).toLowerCase());
+							res.redirect('/user/' + (req.user.profile.username).toLowerCase());
 						}
 					})
 				}
@@ -190,7 +190,7 @@ router.post('/signup/new/parent', function(req, res) {
 						if (err) {
 							throw err;
 						} else {
-							res.redirect('/user/' + (req.body.username).toLowerCase());
+							res.redirect('/user/' + (req.user.profile.username).toLowerCase());
 						}
 					})
 				}
@@ -217,7 +217,7 @@ router.post('/account/profile/update', function(req, res) {
 				if (err) {
 					throw err;
 				} else {
-					res.redirect('/user/' + (req.body.username).toLowerCase());
+					res.redirect('/user/' + (req.user.profile.username).toLowerCase());
 				}
 			})
 		}
@@ -238,7 +238,7 @@ router.post('/account/update', function(req, res) {
 				if (err) {
 					throw err;
 				} else {
-					res.redirect('/user/' + (req.body.username).toLowerCase());
+					res.redirect('/user/' + (req.user.profile.username).toLowerCase());
 				}
 			})
 		}
@@ -256,7 +256,7 @@ router.post('/account/password/update', function(req, res) {
 				if (err) {
 					throw err;
 				} else {
-					res.redirect('/user/' + (req.body.username).toLowerCase());
+					res.redirect('/user/' + (req.user.profile.username).toLowerCase());
 				}
 			})
 		}

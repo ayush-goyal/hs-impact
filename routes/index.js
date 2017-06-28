@@ -83,7 +83,7 @@ router.get('/legal/privacy', function(req, res) {
 
 function isLoggedIn(req, res, next) {
 	if (req.isAuthenticated()) {
-		res.redirect('/user/' + (req.body.username).toLowerCase());
+		res.redirect('/user/' + (req.user.profile.username).toLowerCase());
 	} else {
 		return next();
 	}
@@ -131,7 +131,7 @@ function ensureAuthenticated(req, res, next) {
 function infoFilledOut(req, res, next) {
 	if (req.isAuthenticated()) {
 		if (req.user.profile.address.city && req.user.local.phone.area_code) {
-			res.redirect('/user/' + (req.body.username).toLowerCase());
+			res.redirect('/user/' + (req.user.profile.username).toLowerCase());
 		} else {
 			next();
 		}
@@ -154,7 +154,7 @@ router.get('/signup/new/parent', infoFilledOut, function(req, res) {
 });
 
 router.get('/user', ensureAuthenticated, function(req, res) {
-	res.redirect('/');
+	res.redirect('/account/profile');
 })
 
 router.get('/user/:username', ensureAuthenticated, function(req, res, next) {
