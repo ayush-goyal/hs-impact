@@ -399,7 +399,7 @@ router.post('/account/verify/email/send', function(req, res) {
 			if (reqEmail != userEmail) {
 				user.local.email = reqEmail;
 			}
-			sendEmail(reqEmail, 'HS Impact - Email Verification', 'Please click on the following link to verify your email: ' + 'localhost:3000/account/verify/email/code/' + code + ' or enter this code: ' + code, 'Please click <a href="localhost:3000/account/verify/email/code/' + code + '">here</a> to verify your email or enter this code: ' + code);
+			sendEmail(reqEmail, 'HS Impact - Email Verification', 'Please click on the following link to verify your email: ' + 'https://hs-impact.herokuapp.com/account/verify/email/code/' + code + ' or enter this code: ' + code, 'Please click <a href="https://hs-impact.herokuapp.com/account/verify/email/code/' + code + '">here</a> to verify your email or enter this code: ' + code);
 			user.save(function(err) {
 				if (err) {
 					throw err;
