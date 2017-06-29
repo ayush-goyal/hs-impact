@@ -1,0 +1,42 @@
+<div id="profile-wrapper">
+  <div id="profile-nav">
+    <div class="box">
+      <ul class="alt">
+        <a href="/account/profile">
+          <li style="border-top: none">Profile Info</li>
+        </a>
+        <a href="/account/settings">
+          <li>Account Settings</li>
+        </a>
+        <a href="/account/notifications">
+          <li>Email Notifications</li>
+        </a>
+        <a href="/account/payment">
+          <li>Payment</li>
+        </a>
+      </ul>
+    </div>
+  </div>
+  <section id="main" class="container profile-main" style="padding: 3% 2% 0 0">
+    <div class="box">
+      <h3>Phone Verification</h3>
+      <p>HS Impact requires a verified phone number for all users. This allows the safety and security of all of our users.
+        We will send you a text message with a verification code that you'll need to enter on the next page. Your phone number
+        will not be displayed on your public profile. <br><em>Message and data rates may apply.</em></p>
+      <form method="post" action="/auth/account/verify/phone/send">
+        <div class="row uniform 50%">
+          <div class="10u 12u(narrower)">
+            <h4 style="font-weight: bold">Phone Number</h4>
+            <input style="width: 50%; float: left; margin-right: 10px;" type="text" name="phone" required value="({{phone.area_code}})-{{phone.prefix}}-{{phone.line_number}}"
+            />
+            <input type="submit" value="Send Code" />
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+  <div style=" clear: both; "></div>
+</div>
+<script>
+
+</script>

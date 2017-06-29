@@ -1,0 +1,48 @@
+<div id="profile-wrapper">
+  <div id="profile-nav">
+    <div class="box">
+      <ul class="alt">
+        <a href="/account/profile">
+          <li style="border-top: none">Profile Info</li>
+        </a>
+        <a href="/account/settings">
+          <li>Account Settings</li>
+        </a>
+        <a href="/account/notifications">
+          <li>Email Notifications</li>
+        </a>
+        <a href="/account/payment">
+          <li>Payment</li>
+        </a>
+      </ul>
+    </div>
+  </div>
+  <section id="main" class="container profile-main" style="padding: 3% 2% 0 0">
+    <div class="box">
+      <h3>Email Verification</h3>
+      <p>HS Impact requires a verified email for all users. This allows the safety and security of all of our users. We will
+        send you an email with a verification link that you'll need to click. Your email will not be displayed on your public
+        profile.
+      </p>
+      <form method="post" action="/auth/account/verify/email/code">
+        <div class="row uniform 50%">
+          <div class="7u 12u(narrower)">
+            <h4 style="font-weight: bold">Enter the 6-digit verification code sent to your email <em>or</em> click on the link in the email</h4>
+            <input style="width: 50%; float: left; margin-right: 10px;" type="text" name="code" pattern="\d{6}" maxlength="6" required
+            />
+            <input type="submit" value="Verify" />
+          </div>
+        </div>
+        <div class="row uniform 50%">
+          <div class="7u 12u(narrower)">
+            <p>Click here to <a href="/account/settings">change your email</a> or <a href="/account/verify/email/resend">resend the link</a></p>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+  <div style=" clear: both; "></div>
+</div>
+<script>
+
+</script>

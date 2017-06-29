@@ -12,6 +12,7 @@ var mongo = require('mongodb');
 var mongoose = require('mongoose');
 var helmet = require('helmet');
 
+
 var url = process.env.HSIMPACT_MONGOLAB_URI;
 mongoose.Promise = global.Promise;
 mongoose.connect(url);
@@ -20,6 +21,7 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Connection error:'));
 
 require('./config/passport')(passport); // pass passport for configuration
+
 
 // Init App 
 var app = express();

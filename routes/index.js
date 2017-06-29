@@ -12,6 +12,7 @@ let transporter = nodemailer.createTransport({
 	}
 });
 
+
 // Get Homepage
 router.get('/', function(req, res) {
 	res.render('index', {
@@ -79,6 +80,10 @@ router.get('/legal/terms', function(req, res) {
 // Get Privacy
 router.get('/legal/privacy', function(req, res) {
 	res.render('privacy');
+});
+
+router.get('/calendar', function(req, res) {
+	res.render('calendar');
 });
 
 function isLoggedIn(req, res, next) {
@@ -200,7 +205,10 @@ router.get('/account/profile', ensureAuthenticated, function(req, res) {
 router.get('/account/settings', ensureAuthenticated, function(req, res) {
 	res.render('account-settings', {
 		email: req.user.local.email,
-		phone: req.user.local.phone
+		email_verified: req.user.local.verification.email.verified,
+		phone: req.user.local.phone,
+		phone_verified: req.user.local.verification.phone.verified,
+		success_msg: req.flash('success_msg')
 	});
 });
 
@@ -214,6 +222,126 @@ router.get('/account/password', ensureAuthenticated, function(req, res) {
 
 router.get('/account/payment', ensureAuthenticated, function(req, res) {
 	res.render('account-payment');
+});
+
+router.get('/account/verify/phone', ensureAuthenticated, function(req, res) {
+	if (req.user.local.verification.phone.verified == true) {
+		res.redirect('/user/' + (req.user.profile.username).toLowerCase());
+	} else if (req.user.local.verification.phone.code) {
+		res.redirect('/account/verify/phone/code');
+	} else {
+		res.render('account-verify-phone', {
+			phone: req.user.local.phone
+		});
+	}
+});
+
+router.get('/account/verify/phone/code', ensureAuthenticated, function(req, res) {
+	if (req.user.local.verification.phone.verified == true) {
+		res.redirect('/user/' + (req.user.profile.username).toLowerCase());
+	} else if (req.user.local.verification.phone.code) {
+		res.render('account-verify-phone-code', {
+			phone: req.user.local.phone,
+			error_msg: req.flash('error_msg')
+		});
+	} else {
+		res.redirect('/account/verify/phone');
+	}
+});
+
+router.get('/account/verify/phone/resend', ensureAuthenticated, function(req, res) {
+	if (req.user.local.verification.phone.verified == true) {
+		res.redirect('/user/' + (req.user.profile.username).toLowerCase());
+	} else {
+		User.findById(req.user.id, function(err, user) {
+			if (err) {
+				throw err;
+			} else {
+				user.local.verification.phone.code = undefined;
+				user.save(function(err) {
+					if (err) {
+						throw err;
+					} else {
+						res.redirect('/account/verify/phone');
+					}
+				})
+			}
+		})
+	}
+});
+
+router.get('/account/verify/email', ensureAuthenticated, function(req, res) {
+	if (req.user.local.verification.email.verified == true) {
+		res.redirect('/user/' + (req.user.profile.username).toLowerCase());
+	} else if (req.user.local.verification.email.code) {
+		res.redirect('/account/verify/email/code');
+	} else {
+		res.render('account-verify-email', {
+			email: req.user.local.email
+		});
+	}
+});
+
+router.get('/account/verify/email/code', ensureAuthenticated, function(req, res) {
+	if (req.user.local.verification.email.verified == true) {
+		res.redirect('/user/' + (req.user.profile.username).toLowerCase());
+	} else if (req.user.local.verification.email.code) {
+		res.render('account-verify-email-code', {
+			email: req.user.local.email,
+			error_msg: req.flash('error_msg')
+		});
+	} else {
+		res.redirect('/account/verify/email');
+	}
+});
+
+// post /account/verify/email/code from email link
+router.get('/account/verify/email/code/:code', function(req, res) {
+	if (req.user.local.verification.email.verified == true) {
+		res.redirect('/user/' + (req.user.profile.username).toLowerCase());
+	} else {
+		User.findById(req.user.id, function(err, user) {
+			if (err) {
+				throw err;
+			} else {
+				if (req.params.code == user.local.verification.email.code) {
+					user.local.verification.email.verified = true;
+					user.save(function(err) {
+						if (err) {
+							throw err;
+						} else {
+							req.flash('success_msg', 'Email verified');
+							res.redirect('/account/settings');
+						}
+					})
+				} else {
+					req.flash('error_msg', 'Verification code is incorrect');
+					res.redirect('/account/verify/email/code');
+				}
+			}
+		})
+	}
+});
+
+router.get('/account/verify/email/resend', ensureAuthenticated, function(req, res) {
+	if (req.user.local.verification.email.verified == true) {
+		res.redirect('/user/' + (req.user.profile.username).toLowerCase());
+	} else {
+		User.findById(req.user.id, function(err, user) {
+			if (err) {
+				throw err;
+			} else {
+				user.local.verification.email.code = undefined;
+				user.save(function(err) {
+					if (err) {
+						throw err;
+					} else {
+						res.redirect('/account/verify/email');
+					}
+				})
+			}
+		})
+	}
 });
 
 module.exports = router;

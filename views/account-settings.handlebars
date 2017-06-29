@@ -36,12 +36,24 @@
           <div class="2u 12u(mobilep)">
             <input type="tel" name="phone3" pattern="\d{4}" maxlength="4" value="{{phone.line_number}}" required />
           </div>
+          {{#if phone_verified}}
+          <h3>Verified &#10004</h3>
+          {{else}}
+          <div class="3u">
+            <a href="/account/verify/phone" class="button alt fit">Verify Phone</a> </div>{{/if}}
         </div>
         <div class="row uniform 50%">
-          <div class="10u">
-            <h4 style="font-weight: bold">Email</h4>
+          <h4 style="font-weight: bold">Email</h4>
+        </div>
+        <div class="row uniform 50%">
+          <div class="8u">
             <input type="email" name="email" value="{{email}}" required />
           </div>
+          {{#if email_verified}}
+          <h3>Verified &#10004</h3>
+          {{else}}
+          <div class="3u">
+            <a href="/account/verify/email" class="button alt fit">Verify Email</a> </div>{{/if}}
         </div>
         <div class="row uniform 50%">
           <div class="4u">

@@ -1,8 +1,54 @@
 var express = require('express');
 var router = express.Router();
 var passport = require('passport');
+var twilio = require('twilio');
+var speakeasy = require('speakeasy');
+var nodemailer = require('nodemailer');
 
 var User = require('../models/user');
+
+// Create an authenticated client to access the Twilio REST API
+var client = twilio(process.env.HSIMPACT_TWILIO_ACCOUNT_SID, process.env.HSIMPACT_TWILIO_AUTH_TOKEN);
+
+function sendText(number, message) {
+	client.messages.create({
+		to: number,
+		from: process.env.HSIMPACT_TWILIO_NUMBER,
+		body: message
+	}, function(err, message) {
+		if (err) {
+			console.log(err);
+			return err;
+		} else {
+			return null;
+		}
+	});
+}
+
+let transporter = nodemailer.createTransport({
+	service: "Gmail",
+	auth: {
+		user: 'agoyal2001@gmail.com',
+		pass: process.env.HSIMPACT_GMAIL_PASSWORD
+	}
+});
+
+function sendEmail(recipient, subject, text, html) {
+	let mailOptions = {
+		from: '"HS Impact" <agoyal2001@gmail.com>', // sender address
+		to: recipient, // list of receivers
+		subject: subject, // Subject line
+		text: text,
+		html: html
+	};
+	transporter.sendMail(mailOptions, (error, info) => {
+		if (error) {
+			console.log(error);
+			return error;
+		}
+		return null;
+	});
+}
 
 //GET /auth/login/facebook
 router.get('/facebook',
@@ -242,15 +288,21 @@ router.post('/account/update', function(req, res) {
 		if (err) {
 			throw err;
 		} else {
-			user.local.phone.area_code = req.body.phone1;
-			user.local.phone.prefix = req.body.phone2;
-			user.local.phone.line_number = req.body.phone3;
-			user.local.email = req.body.email;
+			if (user.local.phone.area_code != req.body.phone1 || user.local.phone.prefix != req.body.phone2 || user.local.phone.line_number != req.body.phone3) {
+				user.local.verification.phone = undefined;
+				user.local.phone.area_code = req.body.phone1;
+				user.local.phone.prefix = req.body.phone2;
+				user.local.phone.line_number = req.body.phone3;
+			}
+			if (user.local.email != req.body.email) {
+				user.local.verification.email = undefined;
+				user.local.email = req.body.email;
+			}
 			user.save(function(err) {
 				if (err) {
 					throw err;
 				} else {
-					res.redirect('/user/' + (req.user.profile.username).toLowerCase());
+					res.redirect('/account/settings');
 				}
 			})
 		}
@@ -275,7 +327,113 @@ router.post('/account/password/update', function(req, res) {
 	})
 });
 
+// post /auth/account/verify/phone/send
+router.post('/account/verify/phone/send', function(req, res) {
+	User.findById(req.user.id, function(err, user) {
+		if (err) {
+			throw err;
+		} else {
+			console.log(req.body.phone);
+			var reqPhone = req.body.phone.replace(/\D/g, '');
+			var userPhone = (user.local.phone.area_code + user.local.phone.prefix + user.local.phone.line_number);
+			var code = speakeasy.totp({
+				secret: 'jlaksd73kjd978i3'
+			});
+			user.local.verification.phone.code = code;
+			if (reqPhone == userPhone) {
+				console.log('hello');
+				sendText(reqPhone, 'Your verification code is ' + code);
+			} else if (reqPhone.length == 10) {
+				user.local.phone.area_code = reqPhone.slice(0, 3);
+				user.local.phone.prefix = reqPhone.slice(3, 6);
+				user.local.phone.line_number = reqPhone.slice(6, 10);
+				sendText(reqPhone, 'Your verification code is ' + code);
+			}
+			user.save(function(err) {
+				if (err) {
+					throw err;
+				} else {
+					res.redirect('/account/verify/phone/code');
+				}
+			})
+		}
+	})
+});
 
+// post /auth/account/verify/phone/code
+router.post('/account/verify/phone/code', function(req, res) {
+	User.findById(req.user.id, function(err, user) {
+		if (err) {
+			throw err;
+		} else {
+			if (req.body.code == user.local.verification.phone.code) {
+				user.local.verification.phone.verified = true;
+				user.save(function(err) {
+					if (err) {
+						throw err;
+					} else {
+						req.flash('success_msg', 'Phone number verified');
+						res.redirect('/account/settings');
+					}
+				})
+			} else {
+				req.flash('error_msg', 'Verification code is incorrect');
+				res.redirect('/account/verify/phone/code');
+			}
+		}
+	})
+});
+
+// post /auth/account/verify/email/send
+router.post('/account/verify/email/send', function(req, res) {
+	User.findById(req.user.id, function(err, user) {
+		if (err) {
+			throw err;
+		} else {
+			var reqEmail = req.body.email;
+			var userEmail = user.local.email;
+			var code = speakeasy.totp({
+				secret: 'jlaksd73kjd978i3'
+			});
+			user.local.verification.email.code = code;
+			if (reqEmail != userEmail) {
+				user.local.email = reqEmail;
+			}
+			sendEmail(reqEmail, 'HS Impact - Email Verification', 'Please click on the following link to verify your email: ' + 'localhost:3000/account/verify/email/code/' + code + ' or enter this code: ' + code, 'Please click <a href="localhost:3000/account/verify/email/code/' + code + '">here</a> to verify your email or enter this code: ' + code);
+			user.save(function(err) {
+				if (err) {
+					throw err;
+				} else {
+					res.redirect('/account/verify/email/code');
+				}
+			})
+		}
+	})
+});
+
+// post /auth/account/verify/email/code
+router.post('/account/verify/email/code', function(req, res) {
+	User.findById(req.user.id, function(err, user) {
+		if (err) {
+			throw err;
+		} else {
+			if (req.body.code == user.local.verification.email.code) {
+				user.local.verification.email.verified = true;
+				user.save(function(err) {
+					if (err) {
+						throw err;
+					} else {
+						req.flash('success_msg', 'Email verified');
+						res.redirect('/account/settings');
+					}
+				})
+			} else {
+				req.flash('error_msg', 'Verification code is incorrect');
+				res.redirect('/account/verify/email/code');
+			}
+		}
+	})
+});
 
 module.exports = router;
 

@@ -70,6 +70,26 @@ var UserSchema = mongoose.Schema({
 			line_number: {
 				type: String
 			}
+		},
+		verification: {
+			phone: {
+				verified: {
+					type: Boolean,
+					default: false
+				},
+				code: {
+					type: String
+				}
+			},
+			email: {
+				verified: {
+					type: Boolean,
+					default: false
+				},
+				code: {
+					type: String
+				}
+			}
 		}
 	},
 	facebook: {
@@ -77,14 +97,6 @@ var UserSchema = mongoose.Schema({
 			type: String
 		},
 		token: {
-			type: String
-		}
-	},
-	verification: {
-		phone: {
-			type: String
-		},
-		email: {
 			type: String
 		}
 	}
