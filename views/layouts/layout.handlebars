@@ -18,7 +18,8 @@
   <!--[if lte IE 8]><script src="js/ie/html5shiv.js"></script><![endif]-->
   <link rel="stylesheet" href="https://hs-impact.herokuapp.com/css/main.css" />
   <link rel="stylesheet" href="https://hs-impact.herokuapp.com/css/top.css" />
-  <link rel="stylesheet" href="https://hs-impact.herokuapp.com/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="https://hs-impact.herokuapp.com/css/font-awesome.min.css" /> {{#if isPictureUpload}}
+  <link rel="stylesheet" href="/css/cropit.css"> {{/if}}
   <!--[if lte IE 8]><link rel="stylesheet" href="css/ie8.css" /><![endif]-->
 </head>
 {{#if isHomePage}}
@@ -53,7 +54,13 @@
                 <li><a href="/contact">Contact Us</a></li>
                 {{#if isSignedIn}}
                 <li>
-                  <a href="#" class="icon fa-angle-down"><span>{{profile.name.first}}</span><img src="https://hs-impact.herokuapp.com/img/blank_avatar.png" alt="Profile Pic" id="nav-profile-img" /></a>
+                  <a href="#" class="icon fa-angle-down"><span>{{profile.name.first}}</span>
+                  {{#if profile.image}}
+          <img src="https://s3.amazonaws.com/hs-impact/{{profile.username}}.jpg?time={{time}}" alt="Profile Pic" id="nav-profile-img" /> 
+          {{else}}
+          <img src="https://hs-impact.herokuapp.com/img/blank_avatar.png" alt="Profile Pic" id="nav-profile-img" />
+          {{/if}} 
+                  </a>
                   <ul>
                     <li class="nav-submenu-li"><a href="/user/{{profile.username}}">Profile</a></li>
                     <li class="nav-submenu-li"><a href="/inbox">Inbox</a></li>
@@ -100,7 +107,9 @@
         <script src="https://hs-impact.herokuapp.com/js/skel.min.js"></script>
         <script src="https://hs-impact.herokuapp.com/js/util.js"></script>
         <!--[if lte IE 8]><script src="js/ie/respond.min.js"></script><![endif]-->
-        <script src="https://hs-impact.herokuapp.com/js/main.js"></script>
+        <script src="/js/main.js"></script>
+        {{#if isPictureUpload}}
+        <script src="/js/cropit.js"></script>{{/if}}
       </body>
 
 </html>

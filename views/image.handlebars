@@ -1,0 +1,84 @@
+<section id="main" class="container">
+  <div class="box">
+    <section id="demos" class="demos">
+      <div id="demos-custom-button" class="sub-section demo-wrapper custom-button">
+        <div class="container">
+          <div class="demo">
+            <div class="column">
+              <div class="cropit-preview cropit-image-loaded" style="position: relative; width: 304px; height: 304px; margin: 0 auto">
+                <div class="spinner">
+                  <div class="spinner-dot"></div>
+                  <div class="spinner-dot"></div>
+                  <div class="spinner-dot"></div>
+                </div>
+                <div class="error-msg"></div>
+                <div class="cropit-preview-image-container" style="position: absolute; overflow: hidden; left: 0px; top: 0px; width: 100%; height: 100%;"><img class="cropit-preview-image" alt="" style="transform-origin: left top 0px;"></div>
+              </div>
+              <div class="controls-wrapper">
+                <div class="rotation-btns"><img src="img/rotate_left.png" id="rotate-left" style="width: 30px; cursor: pointer"><img src="img/rotate_right.png"
+                    id="rotate-right" style="width: 30px; cursor: pointer"></div>
+                <div class="slider-wrapper">
+                  <h2 style="display: inline">-</h2><input type="range" style="cursor: pointer" class="cropit-image-zoom-input custom" min="0" max="2"
+                    step="0.02">
+                  <h2 style="display: inline">+</h2>
+                </div>
+              </div>
+            </div>
+            <div class="column">
+              <div class="btns"><input type="file" class="cropit-image-input custom" id="file-input" accept="image/*">
+                <a class="button alt fit btn select-image-btn">Select New Image</a>
+                <a class="button alt fit btn download-btn">Upload Image</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</section>
+<script>
+  /*
+          Function to carry out the actual PUT request to S3 using the signed request from the app.
+        */
+  function uploadFile(file, signedRequest, url) {
+    const xhr = new XMLHttpRequest();
+    xhr.open('PUT', signedRequest);
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          console.log('hello');
+          const xhrUpdated = new XMLHttpRequest();
+          xhrUpdated.open('POST', '/account/picture');
+          xhrUpdated.onreadystatechange = () => {
+            window.location.href = "/account/profile";
+          }
+          xhrUpdated.send();
+        } else {
+          alert('Could not upload file.');
+        }
+      }
+    };
+    xhr.send(file);
+  }
+  /*
+    Function to get the temporary signed request from the app.
+    If request successful, continue to upload the file using this signed
+    request.
+  */
+  function getSignedRequest(file) {
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', '/sign-s3');
+    xhr.onreadystatechange = () => {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          const response = JSON.parse(xhr.responseText);
+          uploadFile(file, response.signedRequest, response.url);
+        } else {
+          alert('Could not upload file.');
+        }
+      }
+    };
+    xhr.send();
+  }
+
+</script>

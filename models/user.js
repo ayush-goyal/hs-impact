@@ -1,11 +1,15 @@
 var mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
+var nodeGeocoder = require('node-geocoder');
 
 // User Schema
 var UserSchema = mongoose.Schema({
 	profile: {
 		username: {
 			type: String
+		},
+		image: {
+			type: Boolean
 		},
 		name: {
 			first: {
@@ -49,6 +53,18 @@ var UserSchema = mongoose.Schema({
 				type: String
 			},
 			zip: {
+				type: String
+			},
+			coordinatates: {
+				type: [Number], // [<longitude>, <latitude>]
+				index: '2dsphere' // create the geospatial index
+			}
+		},
+		picture: {
+			data: {
+				type: Buffer,
+			},
+			contentType: {
 				type: String
 			}
 		}
@@ -112,6 +128,34 @@ UserSchema.methods.generateHash = function(password) {
 UserSchema.methods.validPassword = function(password) {
 	return bcrypt.compareSync(password, this.local.password);
 };
+
+var geocoderOptions = {
+	provider: 'google',
+	// Optional depending on the providers 
+	httpAdapter: 'https', // Default 
+	apiKey: process.env.HSIMPACT_GOOGLE_GEOCODE_API_KEY, // for Mapquest, OpenCage, Google Premier 
+	formatter: null // 'gpx', 'string', ... 
+};
+
+var geocoder = nodeGeocoder(geocoderOptions);
+
+UserSchema.methods.geocodeAddress = function() {
+	var self = this;
+	var selfAddress = this.profile.address;
+	geocoder.geocode(selfAddress.line_1 + ' ' + selfAddress.line_2 + ' ' + selfAddress.city + ' ' + selfAddress.state, function(err, response) {
+		if (err) {
+			throw err;
+		} else {
+			self.profile.address.coordinates = [response[0].longitude, response[0].latitude];
+			self.save(function(err) {
+				if (err) {
+					throw err;
+				}
+			})
+		}
+	})
+};
+
 
 var User = mongoose.model('User', UserSchema);
 module.exports = User;

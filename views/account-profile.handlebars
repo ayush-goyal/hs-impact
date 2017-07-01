@@ -19,6 +19,16 @@
   </div>
   <section id="main" class="container profile-main" style="padding: 3% 2% 0 0">
     <div class="box">
+      <div class="row uniform 50%">
+        <div class="4u 12u(narrower)">
+          {{#if profile.image}}
+          <img height="150px" style="border: #646464 2px solid" src="https://s3.amazonaws.com/hs-impact/{{profile.username}}.jpg?time={{time}}">          {{else}}
+          <img height="150px" style="border: #646464 2px solid" src="https://hs-impact.herokuapp.com/img/blank_avatar.png">          {{/if}}
+        </div>
+        <div class="4u 12u(narrower)">
+          <a href="/image" class="button alt fit">Change Profile Picture</a>
+        </div>
+      </div>
       <form method="post" action="/auth/account/profile/update">
         <div class="row uniform 50%">
           <div class="6u 12u(narrower)">

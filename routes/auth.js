@@ -205,6 +205,7 @@ router.post('/signup/new/student', function(req, res) {
 					user.profile.address.city = (req.body.city).charAt(0).toUpperCase() + req.body.city.slice(1).toLowerCase();
 					user.profile.address.state = req.body.state;
 					user.profile.address.zip = req.body.zip;
+					user.geocodeAddress();
 					user.save(function(err) {
 						if (err) {
 							throw err;
@@ -244,6 +245,7 @@ router.post('/signup/new/parent', function(req, res) {
 					user.profile.address.city = (req.body.city).charAt(0).toUpperCase() + req.body.city.slice(1).toLowerCase();
 					user.profile.address.state = req.body.state;
 					user.profile.address.zip = req.body.zip;
+					user.geocodeAddress();
 					user.save(function(err) {
 						if (err) {
 							throw err;
@@ -270,6 +272,7 @@ router.post('/account/profile/update', function(req, res) {
 			user.profile.address.city = (req.body.city).charAt(0).toUpperCase() + req.body.city.slice(1).toLowerCase();
 			user.profile.address.state = req.body.state;
 			user.profile.address.zip = req.body.zip;
+			user.geocodeAddress();
 			user.profile.biography = req.body.biography;
 			user.save(function(err) {
 				if (err) {
@@ -342,13 +345,12 @@ router.post('/account/verify/phone/send', function(req, res) {
 			user.local.verification.phone.code = code;
 			if (reqPhone == userPhone) {
 				console.log('hello');
-				sendText(reqPhone, 'Your verification code is ' + code);
 			} else if (reqPhone.length == 10) {
 				user.local.phone.area_code = reqPhone.slice(0, 3);
 				user.local.phone.prefix = reqPhone.slice(3, 6);
 				user.local.phone.line_number = reqPhone.slice(6, 10);
-				sendText(reqPhone, 'Your verification code is ' + code);
 			}
+			sendText(reqPhone, 'Your HS Impact verification code is ' + code);
 			user.save(function(err) {
 				if (err) {
 					throw err;

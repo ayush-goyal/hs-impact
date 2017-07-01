@@ -1,6 +1,11 @@
 var express = require('express');
 var router = express.Router();
 var nodemailer = require('nodemailer');
+const aws = require('aws-sdk');
+aws.config.update({
+	accessKeyId: process.env.HSIMPACT_AWS_ACCESS_KEY_ID,
+	secretAccessKey: process.env.HSIMPACT_AWS_SECRET_ACCESS_KEY
+});
 
 var User = require('../models/user');
 
@@ -85,6 +90,39 @@ router.get('/legal/privacy', function(req, res) {
 router.get('/calendar', function(req, res) {
 	res.render('calendar');
 });
+
+router.get('/image', function(req, res) {
+	res.render('image', {
+		isPictureUpload: true
+	});
+});
+
+router.get('/geo', function(req, res) {
+	var METERS_PER_MILE = 1609.34;
+	User.find({
+		'profile.address.coordinates': {
+			$near: {
+				$geometry: {
+					"type": "Point",
+					"coordinates": [-84.4191529,
+						34.02818
+					]
+				},
+				$maxDistance: 5 * METERS_PER_MILE
+			}
+		}
+	}, function(err, list) {
+		if (err) {
+			throw err;
+		} else {
+			console.log(list);
+			res.json(list);
+		}
+	})
+});
+
+
+
 
 function isLoggedIn(req, res, next) {
 	if (req.isAuthenticated()) {
@@ -201,6 +239,53 @@ router.get('/user/:username', ensureAuthenticated, function(req, res, next) {
 router.get('/account/profile', ensureAuthenticated, function(req, res) {
 	res.render('account-profile');
 });
+
+const S3_BUCKET = 'hs-impact';
+
+router.post('/sign-s3', ensureAuthenticated, (req, res) => {
+	const s3 = new aws.S3();
+	const fileName = req.user.profile.username + '.jpg';
+	const fileType = 'image/jpeg';
+	const s3Params = {
+		Bucket: S3_BUCKET,
+		Key: fileName,
+		Expires: 60,
+		ContentType: fileType,
+		ACL: 'public-read'
+	};
+
+	s3.getSignedUrl('putObject', s3Params, (err, data) => {
+		if (err) {
+			console.log(err);
+			return res.end();
+		}
+		const returnData = {
+			signedRequest: data,
+			url: `https://${S3_BUCKET}.s3.amazonaws.com/${fileName}`
+		};
+		res.write(JSON.stringify(returnData));
+		res.end();
+	});
+});
+
+router.post('/account/picture', ensureAuthenticated, function(req, res) {
+	User.findById(req.user.id, function(err, user) {
+		if (err) {
+			throw err;
+		} else {
+			user.profile.image = true;
+			user.save(function(err) {
+				if (err) {
+					throw err;
+				} else {
+					res.json({
+						changed: true
+					});
+				}
+			})
+		}
+	})
+})
 
 router.get('/account/settings', ensureAuthenticated, function(req, res) {
 	res.render('account-settings', {

@@ -86,6 +86,9 @@ app.use(function(req, res, next) {
 		res.locals.isSignedIn = true;
 		if (req.user) {
 			res.locals.profile = req.user.profile;
+			if (req.user.profile.image) {
+				res.locals.time = new Date().getTime();
+			}
 		}
 	}
 	next();
