@@ -121,15 +121,14 @@ router.get('/geo', function(req, res) {
 	})
 });
 
-
-
-
 function isLoggedIn(req, res, next) {
 	if (req.isAuthenticated()) {
 		if (req.user.profile.address.city) {
 			res.redirect('/user/' + (req.user.profile.username).toLowerCase());
 		} else {
-			if (req.user.profile.account_type == "Student") {
+			if (req.user.facebook.id) {
+				res.redirect('/signup/new/facebook');
+			} else if (req.user.profile.account_type == "Student") {
 				res.redirect('/signup/new/student');
 			} else if (req.user.profile.account_type == "Parent") {
 				res.redirect('/signup/new/parent');
@@ -163,11 +162,11 @@ router.get('/signup', isLoggedIn, function(req, res) {
 function ensureAuthenticated(req, res, next) {
 	if (req.isAuthenticated()) {
 		if (req.user.profile.address.city && req.user.local.phone.area_code) {
-			console.log(req.user.local.phone);
-			console.log('next');
 			return next();
 		} else {
-			if (req.user.profile.account_type == "Student") {
+			if (req.user.facebook.id) {
+				res.redirect('/signup/new/facebook');
+			} else if (req.user.profile.account_type == "Student") {
 				res.redirect('/signup/new/student');
 			} else if (req.user.profile.account_type == "Parent") {
 				res.redirect('/signup/new/parent');
@@ -204,6 +203,25 @@ router.get('/signup/new/student', infoFilledOut, function(req, res) {
 
 router.get('/signup/new/parent', infoFilledOut, function(req, res) {
 	res.render('signup-new-parent', {
+		error_msg: req.flash('error_msg')
+	});
+});
+
+router.get('/signup/new/facebook', infoFilledOut, function(req, res) {
+	res.render('signup-new-facebook', {
+		error_msg: req.flash('error_msg'),
+		email: req.user.local.email
+	});
+});
+
+router.get('/signup/new/facebook/student', infoFilledOut, function(req, res) {
+	res.render('signup-new-facebook-student', {
+		error_msg: req.flash('error_msg')
+	});
+});
+
+router.get('/signup/new/facebook/parent', infoFilledOut, function(req, res) {
+	res.render('signup-new-facebook-parent', {
 		error_msg: req.flash('error_msg')
 	});
 });
@@ -288,12 +306,18 @@ router.post('/account/picture', ensureAuthenticated, function(req, res) {
 })
 
 router.get('/account/settings', ensureAuthenticated, function(req, res) {
+	if (req.user.local.password) {
+		var hasLocalLogin = true;
+	} else {
+		var hasLocalLogin = false;
+	}
 	res.render('account-settings', {
 		email: req.user.local.email,
 		email_verified: req.user.local.verification.email.verified,
 		phone: req.user.local.phone,
 		phone_verified: req.user.local.verification.phone.verified,
-		success_msg: req.flash('success_msg')
+		success_msg: req.flash('success_msg'),
+		hasLocalLogin: hasLocalLogin
 	});
 });
 

@@ -1,0 +1,52 @@
+<section id="main" class="container 75%">
+  <header>
+    <h2>Hi!</h2>
+    <p>Welcome to Highschool Impact!</p>
+  </header>
+  <div class="box">
+    <h3>There's just a few more things we need before you get started:</h3>
+    <form method="post" action="/auth/signup/new/facebook">
+      <div class="row uniform 50%">
+        <div class="6u 12u(mobilep)">
+          <h4 style="font-weight: bold">First Name:</h4>
+          <input type="text" name="firstName" value="{{profile.name.first}}" required />
+        </div>
+        <div class="6u 12u(mobilep)">
+          <h4 style="font-weight: bold">Last Name:</h4>
+          <input type="text" name="lastName" value="{{profile.name.last}}" required />
+        </div>
+      </div>
+      <div class="row uniform 50%">
+        <div class="12u">
+          <h4 style="font-weight: bold">Email:</h4>
+          <input type="email" name="email" value="{{email}}" required />
+        </div>
+      </div>
+      <div class="row uniform 50%">
+        <div class="6u 12u(narrower)">
+          <h4 style="font-weight: bold">Username:</h4>
+          <input type="text" name="username" id="username" required />
+        </div>
+      </div>
+      <div class="row uniform 50%">
+        <h4 style="font-weight: bold">Account Type:</h4>
+      </div>
+      <div class="row uniform 50%">
+        <div class="5u 12u(narrower)">
+          <input type="radio" id="student" name="account_type" value="Student" checked>
+          <label for="student">Student</label>
+        </div>
+        <div class="5u 12u(narrower)">
+          <input type="radio" id="parent" name="account_type" value="Parent">
+          <label for="parent">Parent</label>
+        </div>
+      </div>
+      <div class="row uniform">
+        <div class="12u">
+          <ul class="actions align-center">
+            <li><input type="submit" value="Continue" /></li>
+          </ul>
+        </div>
+      </div>
+    </form>
+  </div>

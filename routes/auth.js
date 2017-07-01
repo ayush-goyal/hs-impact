@@ -259,6 +259,103 @@ router.post('/signup/new/parent', function(req, res) {
 	})
 });
 
+// post /auth/signup/new/facebook
+router.post('/signup/new/facebook', function(req, res) {
+	User.findById(req.user.id, function(err, user) {
+		if (err) {
+			throw err;
+		} else {
+			User.findOne({
+				'profile.username': (req.body.username).toLowerCase()
+			}, function(err, userCheck) {
+				if (err) {
+					throw (err);
+				}
+				// check to see if theres already a user with that username
+				if (userCheck) {
+					req.flash('error_msg', 'Username already exists');
+					res.redirect('/signup/new/facebook');
+				} else { // else return user not found
+					user.profile.name.first = req.body.firstName;
+					user.profile.name.last = req.body.lastName;
+					user.local.email = req.body.email;
+					//TODO: Send Welcome Email & Verification
+					user.profile.username = (req.body.username).toLowerCase();
+					var account_type = req.body.account_type;
+					user.profile.account_type = account_type;
+					user.save(function(err) {
+						if (err) {
+							throw err;
+						} else {
+							if (account_type == "Student") {
+								res.redirect('/signup/new/facebook/student');
+							} else if (account_type == "Parent") {
+								res.redirect('/signup/new/facebook/parent');
+							}
+						}
+					})
+				}
+			})
+		}
+	})
+});
+
+// post /auth/signup/new/facebook/student
+router.post('/signup/new/facebook/student', function(req, res) {
+	User.findById(req.user.id, function(err, user) {
+		if (err) {
+			throw err;
+		} else {
+			user.local.phone.area_code = req.body.phone1;
+			user.local.phone.prefix = req.body.phone2;
+			user.local.phone.line_number = req.body.phone3;
+			user.profile.date_of_birth.month = req.body.date_of_birth.slice(0, 2);
+			user.profile.date_of_birth.day = req.body.date_of_birth.slice(3, 5);
+			user.profile.date_of_birth.year = req.body.date_of_birth.slice(6, 10);
+			user.profile.school = req.body.school;
+			user.profile.address.line_1 = req.body.line_1;
+			user.profile.address.line_2 = req.body.line_2;
+			user.profile.address.city = (req.body.city).charAt(0).toUpperCase() + req.body.city.slice(1).toLowerCase();
+			user.profile.address.state = req.body.state;
+			user.profile.address.zip = req.body.zip;
+			user.geocodeAddress();
+			user.save(function(err) {
+				if (err) {
+					throw err;
+				} else {
+					res.redirect('/user/' + (req.user.profile.username).toLowerCase());
+				}
+			})
+		}
+	})
+});
+
+// post /auth/signup/new/facebook/parent
+router.post('/signup/new/facebook/parent', function(req, res) {
+	User.findById(req.user.id, function(err, user) {
+		if (err) {
+			throw err;
+		} else {
+			user.local.phone.area_code = req.body.phone1;
+			user.local.phone.prefix = req.body.phone2;
+			user.local.phone.line_number = req.body.phone3;
+			user.profile.address.line_1 = req.body.line_1;
+			user.profile.address.line_2 = req.body.line_2;
+			user.profile.address.city = (req.body.city).charAt(0).toUpperCase() + req.body.city.slice(1).toLowerCase();
+			user.profile.address.state = req.body.state;
+			user.profile.address.zip = req.body.zip;
+			user.geocodeAddress();
+			user.save(function(err) {
+				if (err) {
+					throw err;
+				} else {
+					res.redirect('/user/' + (req.user.profile.username).toLowerCase());
+				}
+			})
+		}
+	})
+});
+
 // post /auth/account/profile/update
 router.post('/account/profile/update', function(req, res) {
 	User.findById(req.user.id, function(err, user) {

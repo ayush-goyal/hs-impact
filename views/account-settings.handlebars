@@ -55,11 +55,13 @@
           <div class="3u">
             <a href="/account/verify/email" class="button alt fit">Verify Email</a> </div>{{/if}}
         </div>
+        {{#if hasLocalLogin}}
         <div class="row uniform 50%">
           <div class="4u">
             <a href="/account/password" class="button alt fit">Change Password</a>
           </div>
         </div>
+        {{/if}}
         <div class="row uniform">
           <div class="12u">
             <ul class="actions align-center">

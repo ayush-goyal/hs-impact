@@ -148,10 +148,8 @@ module.exports = function(passport) {
 								user.profile.name.last = profile.name.familyName;
 							} else if (profile.displayName) {
 								user.profile.name.first = profile.displayName;
-								user.profile.name.last = ' ';
 							} else if (profile.username) {
 								user.profile.name.first = profile.username;
-								user.profile.name.last = ' ';
 							} else {
 								var err = new Error('Facebook profile does not provide a valid name. Please create an account.');
 								err.status = 400;
@@ -186,10 +184,8 @@ module.exports = function(passport) {
 							newUser.profile.name.last = profile.name.familyName;
 						} else if (profile.displayName) {
 							newUser.profile.name.first = profile.displayName;
-							newUser.profile.name.last = ' ';
 						} else if (profile.username) {
 							newUser.profile.name.first = profile.username;
-							newUser.profile.name.last = ' ';
 						} else {
 							var err = new Error('Facebook profile does not provide a valid name. Please create an account.');
 							err.status = 400;
@@ -223,10 +219,8 @@ module.exports = function(passport) {
 					user.profile.name.last = profile.name.familyName;
 				} else if (profile.displayName) {
 					user.profile.name.first = profile.displayName;
-					user.profile.name.last = ' ';
 				} else if (profile.username) {
 					user.profile.name.first = profile.username;
-					user.profile.name.last = ' ';
 				} else {
 					var err = new Error('Facebook profile does not provide a valid name. Please create an account.');
 					err.status = 400;
