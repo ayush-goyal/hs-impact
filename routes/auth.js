@@ -59,7 +59,7 @@ router.get('/facebook',
 //GET /auth/facebook/return
 router.get('/facebook/return',
 	passport.authenticate('facebook', {
-		successRedirect: '/profile',
+		successRedirect: '/signup/new/facebook',
 		failureRedirect: '/login'
 	})
 );
