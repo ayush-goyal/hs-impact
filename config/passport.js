@@ -121,7 +121,7 @@ module.exports = function(passport) {
 		clientID: process.env.HSIMPACT_FACEBOOK_APP_ID,
 		clientSecret: process.env.HSIMPACT_FACEBOOK_APP_SECRET,
 		callbackURL: "https://hs-impact.herokuapp.com/auth/facebook/return",
-		profileFields: ['id', 'displayName', 'email'],
+		profileFields: ['id', 'displayName', 'email', 'friends'],
 		passReqToCallback: true
 	}, function(req, accessToken, refreshToken, profile, done) {
 		// asynchronous verification, for effect...
@@ -131,6 +131,7 @@ module.exports = function(passport) {
 						console.log("token: " + accessToken);
 						console.dir(req);
 						console.log("refreshtoken: " + refreshToken)*/
+			console.log(profile);
 			if (!req.user) {
 				User.findOne({
 					'facebook.id': profile.id
@@ -171,7 +172,6 @@ module.exports = function(passport) {
 								return done(null, user);
 							});
 						}
-
 						return done(null, user); // user found, return that user
 					} else {
 						// if there is no user, create them
@@ -239,7 +239,6 @@ module.exports = function(passport) {
 						console.log(err);
 						return done(err);
 					}
-
 					return done(null, user);
 				});
 

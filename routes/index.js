@@ -484,7 +484,13 @@ router.post('/post/new', ensureAuthenticated, function(req, res) {
 	// create the job
 	var newJob = new Job();
 
-	newJob.creator = req.user._id;
+	newJob.creator.name = req.user.profile.name.first + ' ' + req.user.profile.name.last;
+	newJob.creator.username = req.user.profile.username;
+	if (req.user.profile.image) {
+		newJob.creator.image = true;
+	} else {
+		newJob.creator.image = false;
+	}
 	newJob.title = req.body.title;
 	newJob.date = req.body.date;
 	newJob.time.start = req.body.start_time;
