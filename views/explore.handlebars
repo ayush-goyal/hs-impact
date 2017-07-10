@@ -1,0 +1,93 @@
+<div id="profile-wrapper">
+  <div id="profile-nav">
+    <div class="box">
+      <form method="post" action="/explore/refine">
+        <div class="row uniform">
+          <div class="12u">
+            <ul class="actions align-center">
+              <li>
+                <h4>Refine Your Search</h4>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="row uniform">
+          <div class="12u">
+            <ul class="actions align-center">
+              <li>
+                <p style="margin: 0">Within</p>
+                <div class="select-wrapper"><select name="range">
+                <option value="1">1 mile</option>
+                <option value="2">2 miles</option>
+                <option value="3">3 miles</option>  
+                <option value="4">4 miles</option>
+                <option value="5" selected>5 miles</option>
+                <option value="10">10 miles</option>
+                <option value="15">15 miles</option>
+                <option value="20">20 miles</option>
+                <option value="25">25 miles</option>
+                </select></div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="row uniform">
+          <div class="12u">
+            <ul class="actions align-center">
+            </ul>
+          </div>
+        </div>
+        <div class="row uniform">
+          <div class="12u">
+            <ul class="actions align-center">
+            </ul>
+          </div>
+        </div>
+        <div class="row uniform">
+          <div class="12u">
+            <ul class="actions align-center">
+              <li><input type="submit" value="Refine" /></li>
+            </ul>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <section id="main" class="container profile-main" style="padding: 3% 2% 0 0">
+    {{#each jobs}}
+    <div class="box">
+      <div class="row uniform 50%">
+        <div class="2u 12u(narrower)">
+          {{#if creator.image}}
+          <img height="100px" style="border: #646464 2px solid" src="https://s3.amazonaws.com/hs-impact/{{creator.username}}.jpg">          {{else}}
+          <img height="100px" style="border: #646464 2px solid" src="https://hs-impact.herokuapp.com/img/blank_avatar.png">          {{/if}}
+          <p>Posted by:<br><a href="/{{creator.username}}">{{creator.name}}</a></p>
+        </div>
+        <div class="10u 12u(narrower)">
+          <h3>{{title}}</h3>
+          <p>{{description}}</p>
+          <div class="row uniform 50%">
+            <div class="3u">
+              <h5 style="font-weight: bold">Date:</h5>
+              <h5>{{date}}</h5>
+            </div>
+            <div class="3u">
+              <h5 style="font-weight: bold">Time:</h5>
+              <h5>{{time.start}} - {{time.end}}</h5>
+            </div>
+            <div class="3u">
+              <h5 style="font-weight: bold">Location:</h5>
+              <h5>{{location}}</h5>
+            </div>
+            <div class="3u">
+              <h5 style="font-weight: bold">Pay Rate:</h5>
+              <h5>${{pay}} per hour</h5>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {{/each}}
+  </section>
+  <div style="clear: both;"></div>
+</div>

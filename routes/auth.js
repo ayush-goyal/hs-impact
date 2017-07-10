@@ -272,7 +272,7 @@ router.post('/signup/new/facebook', function(req, res) {
 					throw (err);
 				}
 				// check to see if theres already a user with that username
-				if (userCheck) {
+				if (userCheck && usercheck != user) {
 					req.flash('error_msg', 'Username already exists');
 					res.redirect('/signup/new/facebook');
 				} else { // else return user not found

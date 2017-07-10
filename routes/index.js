@@ -8,6 +8,7 @@ aws.config.update({
 });
 
 var User = require('../models/user');
+var Job = require('../models/job.js');
 
 let transporter = nodemailer.createTransport({
 	service: "Gmail",
@@ -453,6 +454,53 @@ router.get('/account/verify/email/resend', ensureAuthenticated, function(req, re
 	}
 });
 
+
+router.get('/explore', ensureAuthenticated, function(req, res) {
+	/*Job.find().limit(10).toArray(function(err, jobs) {
+		if (err) {
+			console.log(err);
+		} else {
+			res.render('explore', {
+				jobs: jobs
+			});
+		}
+	})*/
+	Job.find({}).limit(10).exec(function(err, jobs) {
+		if (err) {
+			console.log(err);
+		} else {
+			res.render('explore', {
+				jobs: jobs
+			});
+		}
+	})
+});
+
+router.get('/post', ensureAuthenticated, function(req, res) {
+	res.render('post');
+});
+
+router.post('/post/new', ensureAuthenticated, function(req, res) {
+	// create the job
+	var newJob = new Job();
+
+	newJob.creator = req.user._id;
+	newJob.title = req.body.title;
+	newJob.date = req.body.date;
+	newJob.time.start = req.body.start_time;
+	newJob.time.end = req.body.end_time;
+	newJob.location = req.user.profile.address.city + ', ' + req.user.profile.address.state + ' ' + req.user.profile.address.zip;
+	newJob.description = req.body.description;
+	newJob.pay = req.body.pay;
+	newJob.children = req.body.children;
+
+	newJob.save(function(err) {
+		if (err) {
+			console.log(err);
+		}
+		res.redirect('/user/' + (req.user.profile.username).toLowerCase());
+	});
+})
 module.exports = router;
 
 
@@ -491,14 +539,14 @@ router.post('/signup', function(req, res) {
 			errors: errors
 		});
 	} else {
-		var newUser = new User({
+		var newJob = new User({
 			name: name,
 			email: email,
 			username: username,
 			password: password
 		});
 
-		User.createUser(newUser, function(err, user) {
+		User.createUser(newJob, function(err, user) {
 			if (err) throw err;
 			console.log(user);
 		});
